@@ -12,6 +12,7 @@ POST data (JSON representation of a tiddler) can be used instead of a tiddler
 reference (rev1 or rev2 URL parameter)
 
 To Do:
+* tests
 * enhanced diff output (inline highlighting)
 """
 
@@ -22,6 +23,9 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
+
+
+__version__ = "0.1.0"
 
 
 def init(config):
