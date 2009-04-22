@@ -13,8 +13,10 @@ reference (rev1 or rev2 URL parameter)
 
 To Do:
 * use /diff
-* diff implementation (various formats?)
+* enhanced diff output (inline highlighting)
 """
+
+from difflib import Differ
 
 from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
@@ -56,7 +58,13 @@ def post_request(environ, start_response):
 
 
 def compare(rev1, rev2):
-	return "<pre>%s</pre>" % (rev1, rev2)
+	return "<pre>%s</pre>" % diff(rev1, rev2)
+
+
+def diff(a, b):
+	d = Differ()
+	result = list(d.compare(a.splitlines(), b.splitlines()))
+	return "\n".join(result)
 
 
 def _get_tiddler(id, store): # XXX: rename
