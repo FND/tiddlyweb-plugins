@@ -12,7 +12,6 @@ POST data (JSON representation of a tiddler) can be used instead of a tiddler
 reference (rev1 or rev2 URL parameter)
 
 To Do:
-* resolve POSTed JSON representation
 * enhanced diff output (inline highlighting)
 """
 
@@ -45,7 +44,12 @@ def get_request(environ, start_response):
 
 def post_request(environ, start_response):
 	length = int(environ["CONTENT_LENGTH"])
-	rev = environ["wsgi.input"].read(length) # TODO: convert JSON to text serialization
+	post_content = environ["wsgi.input"].read(length)
+	serializer = Serializer("json") # TODO: use content-type to determine serialization
+	rev = Tiddler("untitled") # N.B.: Serializations need not contain title.
+	serializer.object = rev
+	serializer.from_string(post_content.decode("utf-8"))
+
 	rev1_id, rev2_id = _get_revision_params(environ)
 	store = environ["tiddlyweb.store"]
 	try:
@@ -59,11 +63,20 @@ def post_request(environ, start_response):
 			raise HTTP400("ambiguous request")
 	except AttributeError:
 		raise HTTP400("missing revision parameter")
+
 	content = compare(rev1, rev2)
 	return _generate_response(content, environ, start_response)
 
 
 def compare(rev1, rev2):
+	"""
+	compare two tiddlers
+	"""
+	serializer = Serializer("text")
+	serializer.object = rev1
+	rev1 = serializer.to_string()
+	serializer.object = rev2
+	rev2 = serializer.to_string()
 	return "<pre>\n%s\n</pre>" % diff(rev1, rev2)
 
 
@@ -86,11 +99,7 @@ def _get_tiddler(id, store): # XXX: rename
 	else:
 		raise HTTP400("recipes not supported") # TODO?
 	tiddler.revision = rev
-	tiddler = store.get(tiddler)
-	# serialize tiddler
-	serializer = Serializer("text")
-	serializer.object = tiddler
-	return serializer.to_string()
+	return store.get(tiddler)
 
 
 def _resolve_identifier(id):
