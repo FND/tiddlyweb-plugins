@@ -2,8 +2,8 @@
 TiddlyWeb plugin to compare tiddler revisions
 
 Usage:
-  GET /differ?rev1=<tiddler>&rev2=<tiddler>
-  POST /differ?rev1=<tiddler>
+  GET /diff?rev1=<tiddler>&rev2=<tiddler>
+  POST /diff?rev1=<tiddler>
 
 tiddler references are of the form bags/<title>[/<revision>]
 (recipes are currently not supported in this context)
@@ -12,7 +12,7 @@ POST data (JSON representation of a tiddler) can be used instead of a tiddler
 reference (rev1 or rev2 URL parameter)
 
 To Do:
-* use /diff
+* resolve POSTed JSON representation
 * enhanced diff output (inline highlighting)
 """
 
@@ -28,7 +28,7 @@ from tiddlyweb.web.http import HTTP400
 def init(config):
 	print "initializing differ" # XXX: bad form?
 	# extend urls.map
-	config["selector"].add("/differ", GET=get_request, POST=post_request)
+	config["selector"].add("/diff", GET=get_request, POST=post_request)
 
 
 def get_request(environ, start_response):
