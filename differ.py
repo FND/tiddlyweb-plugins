@@ -43,22 +43,22 @@ def get_request(environ, start_response):
 def post_request(environ, start_response):
 	length = int(environ["CONTENT_LENGTH"])
 	rev = environ["wsgi.input"].read(length) # TODO: convert JSON to text serialization
-	rev1, rev2 = _get_revision_params(environ)
+	rev1_id, rev2_id = _get_revision_params(environ)
 	store = environ["tiddlyweb.store"]
-	if rev1:
-		rev1 = _get_tiddler(rev1, store)
-	else:
+	if not rev1_id:
 		rev1 = rev
-	if rev2: # XXX: duplication; might result in POST data being used for both revisions
-		rev2 = _get_tiddler(rev2, store)
-	else:
+		rev2 = _get_tiddler(rev2_id, store)
+	elif not rev2_id:
+		rev1 = _get_tiddler(rev1_id, store)
 		rev2 = rev
+	else:
+		raise HTTP400("ambiguous request")
 	content = compare(rev1, rev2)
 	return _generate_response(content, environ, start_response)
 
 
 def compare(rev1, rev2):
-	return "<pre>%s</pre>" % diff(rev1, rev2)
+	return "<pre>\n%s\n</pre>" % diff(rev1, rev2)
 
 
 def diff(a, b):
@@ -118,9 +118,9 @@ def _get_revision_params(environ):
 			rev = rev[0]
 		return rev
 
-	rev1 = get_param("rev1")
-	rev2 = get_param("rev2")
-	return rev1, rev2
+	rev1_id = get_param("rev1")
+	rev2_id = get_param("rev2")
+	return rev1_id, rev2_id
 
 
 def _generate_response(content, environ, start_response):
