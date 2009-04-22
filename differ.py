@@ -34,8 +34,11 @@ def init(config):
 def get_request(environ, start_response):
 	rev1, rev2 = _get_revision_params(environ)
 	store = environ["tiddlyweb.store"]
-	rev1 = _get_tiddler(rev1, store)
-	rev2 = _get_tiddler(rev2, store)
+	try:
+		rev1 = _get_tiddler(rev1, store)
+		rev2 = _get_tiddler(rev2, store)
+	except AttributeError:
+		raise HTTP400("missing revision parameter")
 	content = compare(rev1, rev2)
 	return _generate_response(content, environ, start_response)
 
@@ -45,14 +48,17 @@ def post_request(environ, start_response):
 	rev = environ["wsgi.input"].read(length) # TODO: convert JSON to text serialization
 	rev1_id, rev2_id = _get_revision_params(environ)
 	store = environ["tiddlyweb.store"]
-	if not rev1_id:
-		rev1 = rev
-		rev2 = _get_tiddler(rev2_id, store)
-	elif not rev2_id:
-		rev1 = _get_tiddler(rev1_id, store)
-		rev2 = rev
-	else:
-		raise HTTP400("ambiguous request")
+	try:
+		if not rev1_id:
+			rev1 = rev
+			rev2 = _get_tiddler(rev2_id, store)
+		elif not rev2_id:
+			rev1 = _get_tiddler(rev1_id, store)
+			rev2 = rev
+		else:
+			raise HTTP400("ambiguous request")
+	except AttributeError:
+		raise HTTP400("missing revision parameter")
 	content = compare(rev1, rev2)
 	return _generate_response(content, environ, start_response)
 
