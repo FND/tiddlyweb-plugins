@@ -33,16 +33,14 @@ def get_request(environ, start_response):
 		url = "http://%s" % url # XXX: magic!?
 	req = urlopen(url)
 	if req.code == 200:
-		content = req.read()
+		return _generate_response(req, environ, start_response)
 	else:
 		raise HTTP400("error loading %s: %s" % (url, req.msg)) # XXX: 400 not appropriate?
-	return _generate_response(content, environ, start_response)
 
 
 def _generate_response(content, environ, start_response):
-	print content # DEBUG
 	serialize_type, mime_type = web.get_serialize_type(environ)
 	content_header = ("Content-Type", mime_type) # XXX: not correct!?
 	response = [content_header]
 	start_response("200 OK", response)
-	return [content]
+	return content # N.B.: must be an iterator
