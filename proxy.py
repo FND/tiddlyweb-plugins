@@ -28,7 +28,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 whitelist = []
 
@@ -42,7 +42,7 @@ def init(config):
 
 
 def get_request(environ, start_response):
-	url = environ["selector.vars"]["url"]
+	url = environ["wsgiorg.routing_args"][1]["url"]
 	if not "://" in url:
 		url = "http://%s" % url # XXX: magic!?
 	if _whitelisted(url):
