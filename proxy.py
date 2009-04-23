@@ -19,6 +19,7 @@ Example:
 To Do:
 * character-encoding handling
 * content-type handling
+* tests
 """
 
 from urllib2 import urlopen
@@ -28,24 +29,22 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 whitelist = []
 
 
 def init(config):
-	global whitelist # XXX: ugly?
 	# extend urls.map
 	config["selector"].add("/proxy/{url:any}", GET=get_request)
-	# read whitelist
-	whitelist = config["proxy_whitelist"]
 
 
 def get_request(environ, start_response):
 	url = environ["wsgiorg.routing_args"][1]["url"]
 	if not "://" in url:
 		url = "http://%s" % url # XXX: magic!?
-	if _whitelisted(url):
+	whitelist = environ["tiddlyweb.config"]["proxy_whitelist"]
+	if _whitelisted(url, whitelist):
 		req = urlopen(url)
 	else:
 		raise HTTP400("error loading %s: unautorized" % url) # XXX: 400 not appropriate?
@@ -55,9 +54,9 @@ def get_request(environ, start_response):
 		raise HTTP400("error loading %s: %s" % (url, req.msg)) # XXX: 400 not appropriate?
 
 
-def _whitelisted(url):
+def _whitelisted(url, items):
 	host = urlparse(url).hostname
-	for item in whitelist:
+	for item in items:
 		if host.endswith(item): # XXX: insecure?
 			return True
 	return False
