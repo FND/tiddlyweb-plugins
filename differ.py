@@ -29,7 +29,6 @@ __version__ = "0.1.0"
 
 
 def init(config):
-	print "initializing differ" # XXX: bad form?
 	# extend urls.map
 	config["selector"].add("/diff", GET=get_request, POST=post_request)
 

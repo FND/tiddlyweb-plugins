@@ -23,15 +23,14 @@ __version__ = "0.1.0"
 
 
 def init(config):
-	print "initializing proxy" # XXX: bad form?
 	# extend urls.map
 	config["selector"].add("/proxy/{url:any}", GET=get_request)
 
 
 def get_request(environ, start_response):
 	url = environ["selector.vars"]["url"]
-	if not "://" in url: # XXX: magic!?
-		url = "http://%s" % url
+	if not "://" in url:
+		url = "http://%s" % url # XXX: magic!?
 	req = urlopen(url)
 	if req.code == 200:
 		content = req.read()
