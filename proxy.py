@@ -29,7 +29,7 @@ from tiddlyweb.web.http import HTTP400
 from tiddlywebplugins import require_any_user
 
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 whitelist = []
 
@@ -55,8 +55,8 @@ def get_request(environ, start_response):
 	try:
 		content_type, charset = content_type.split("; charset=")
 	except ValueError: # charset not specified
-		charset = "UTF-8" # XXX: use lowercase?
-	mime_type = "%s; %s" % (content_type, charset)
+		charset = "UTF-8"
+	mime_type = "%s; charset=%s" % (content_type, charset)
 
 	if req.code == 200:
 		return _generate_response(req, mime_type, environ, start_response)
@@ -73,7 +73,7 @@ def _whitelisted(url, items):
 
 
 def _generate_response(content, mime_type, environ, start_response):
-	content_header = ("Content-Type", mime_type) # XXX: not correct!?
+	content_header = ("Content-Type", mime_type)
 	response = [content_header]
 	start_response("200 OK", response)
 	return content # N.B.: must be an iterator
