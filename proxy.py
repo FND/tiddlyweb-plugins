@@ -28,8 +28,10 @@ from urlparse import urlparse
 from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
+from tiddlywebplugins import require_any_user
 
-__version__ = "0.2.2"
+
+__version__ = "0.3.0"
 
 whitelist = []
 
@@ -39,6 +41,7 @@ def init(config):
 	config["selector"].add("/proxy/{url:any}", GET=get_request)
 
 
+@require_any_user()
 def get_request(environ, start_response):
 	url = environ["wsgiorg.routing_args"][1]["url"]
 	if not "://" in url:
