@@ -17,8 +17,6 @@ Example:
 	}
 
 To Do:
-* character-encoding handling
-* content-type handling
 * tests
 """
 
@@ -31,7 +29,7 @@ from tiddlyweb.web.http import HTTP400
 from tiddlywebplugins import require_any_user
 
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 whitelist = []
 
@@ -46,13 +44,22 @@ def get_request(environ, start_response):
 	url = environ["wsgiorg.routing_args"][1]["url"]
 	if not "://" in url:
 		url = "http://%s" % url # XXX: magic!?
+
 	whitelist = environ["tiddlyweb.config"]["proxy_whitelist"]
 	if _whitelisted(url, whitelist):
 		req = urlopen(url)
 	else:
 		raise HTTP400("error loading %s: unautorized" % url) # XXX: 400 not appropriate?
+
+	content_type = req.info()["Content-Type"]
+	try:
+		content_type, charset = content_type.split("; charset=")
+	except ValueError: # charset not specified
+		charset = "UTF-8" # XXX: use lowercase?
+	mime_type = "%s; %s" % (content_type, charset)
+
 	if req.code == 200:
-		return _generate_response(req, environ, start_response)
+		return _generate_response(req, mime_type, environ, start_response)
 	else:
 		raise HTTP400("error loading %s: %s" % (url, req.msg)) # XXX: 400 not appropriate?
 
@@ -65,8 +72,7 @@ def _whitelisted(url, items):
 	return False
 
 
-def _generate_response(content, environ, start_response):
-	serialize_type, mime_type = web.get_serialize_type(environ)
+def _generate_response(content, mime_type, environ, start_response):
 	content_header = ("Content-Type", mime_type) # XXX: not correct!?
 	response = [content_header]
 	start_response("200 OK", response)
