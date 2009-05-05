@@ -13,10 +13,9 @@ reference (rev1 or rev2 URL parameter)
 
 To Do:
 * tests
-* enhanced diff output (inline highlighting)
 """
 
-from difflib import Differ
+import difflib
 
 from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
@@ -25,7 +24,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 
 def init(config):
@@ -84,9 +83,31 @@ def compare(rev1, rev2):
 
 
 def diff(a, b):
-	d = Differ()
+	d = difflib.Differ()
 	result = list(d.compare(a.splitlines(), b.splitlines()))
 	return "\n".join(result)
+
+
+def generate_inline_diff(a, b): # XXX: currently unused -- TODO: multi-line support
+	"""
+	compare two single-line strings
+
+	returns an "inline" diff using minimal HTML markup (INS and DEL elements)
+	"""
+	seq = difflib.SequenceMatcher(None, a, b)
+	output = []
+	for opcode, a0, a1, b0, b1 in seq.get_opcodes():
+		if opcode == "equal":
+			output.append(seq.a[a0:a1])
+		elif opcode == "insert":
+			output.append("<ins>%s</ins>" % seq.b[b0:b1])
+		elif opcode == "delete":
+			output.append("<del>%s</del>" % seq.a[a0:a1])
+		elif opcode == "replace":
+			output.append("<del>%s</del><ins>%s</ins>" % (seq.a[a0:a1], seq.b[b0:b1]))
+		else:
+			raise RuntimeError("unexpected opcode") # XXX: RuntimeError inappropriate?
+	return "".join(output)
 
 
 def _get_tiddler(id, store): # XXX: rename
