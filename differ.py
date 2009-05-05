@@ -88,7 +88,7 @@ def diff(a, b):
 	return "\n".join(result)
 
 
-def generate_inline_diff(a, b): # XXX: currently unused -- TODO: multi-line support
+def generate_inline_diff(a, b): # XXX: currently unused -- TODO: special handling for line-break changes
 	"""
 	compare two single-line strings
 
