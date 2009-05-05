@@ -5,10 +5,29 @@ Test Differ plugin.
 import sys
 sys.path.append(".")
 
-from differ import generate_inline_diff
+import differ
+
+
+def test_diff():
+
+	diff = differ.diff
+
+	a = "lorem ipsum"
+	b = "lorem foo ipsum"
+	actual = diff(a, b)
+	expected = "- lorem ipsum\n+ lorem foo ipsum\n?       ++++\n"
+	assert actual == expected
+
+	a = "lorem ipsum"
+	b = "lorem foo ipsum"
+	actual = diff(a, b, "inline")
+	expected = "lorem <ins>foo </ins>ipsum"
+	assert actual == expected
 
 
 def test_generate_inline_diff():
+
+	generate_inline_diff = differ.generate_inline_diff
 
 	a = "lorem ipsum"
 	b = "lorem foo ipsum"

@@ -82,10 +82,17 @@ def compare(rev1, rev2):
 	return "<pre>\n%s\n</pre>" % diff(rev1, rev2)
 
 
-def diff(a, b):
-	d = difflib.Differ()
-	result = list(d.compare(a.splitlines(), b.splitlines()))
-	return "\n".join(result)
+def diff(a, b, type=None): # XXX: rename?
+	"""
+	optional type "inline" can be used
+	defaults to human-readable line-by-line comparison
+	"""
+	if type == "inline":
+		return generate_inline_diff(a, b)
+	else:
+		d = difflib.Differ()
+		result = list(d.compare(a.splitlines(), b.splitlines()))
+		return "\n".join(result)
 
 
 def generate_inline_diff(a, b): # XXX: currently unused -- TODO: special handling for line-break changes
