@@ -61,3 +61,9 @@ def test_generate_inline_diff():
 	actual = generate_inline_diff(a, b)
 	expected = "foo <ins>\n</ins>bar <del>\n</del>baz"
 	assert actual == expected
+
+	a = "< foo | bar & baz"
+	b = "foo & bar & baz >"
+	actual = generate_inline_diff(a, b)
+	expected = "<del>&lt; </del>foo <del>|</del><ins>&amp;</ins> bar &amp; baz<ins> &gt;</ins>"
+	assert actual == expected

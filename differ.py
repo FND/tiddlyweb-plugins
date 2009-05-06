@@ -17,6 +17,8 @@ To Do:
 
 import difflib
 
+from cgi import escape
+
 from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
@@ -102,21 +104,22 @@ def diff(a, b, type=None): # XXX: rename?
 
 def generate_inline_diff(a, b): # XXX: currently unused -- TODO: special handling for line-break changes
 	"""
-	compare two strings
+	compare two strings, highlighting differences inline
 
-	returns an "inline" diff using minimal HTML markup (INS and DEL elements)
+	returns a string using minimal HTML markup (INS and DEL elements)
 	"""
 	seq = difflib.SequenceMatcher(None, a, b)
 	output = []
 	for opcode, a0, a1, b0, b1 in seq.get_opcodes():
 		if opcode == "equal":
-			output.append(seq.a[a0:a1])
+			output.append(escape(seq.a[a0:a1]))
 		elif opcode == "insert":
-			output.append("<ins>%s</ins>" % seq.b[b0:b1])
+			output.append("<ins>%s</ins>" % escape(seq.b[b0:b1]))
 		elif opcode == "delete":
-			output.append("<del>%s</del>" % seq.a[a0:a1])
+			output.append("<del>%s</del>" % escape(seq.a[a0:a1]))
 		elif opcode == "replace":
-			output.append("<del>%s</del><ins>%s</ins>" % (seq.a[a0:a1], seq.b[b0:b1]))
+			output.append("<del>%s</del><ins>%s</ins>" %
+				(escape(seq.a[a0:a1]), escape(seq.b[b0:b1])))
 		else:
 			raise RuntimeError("unexpected opcode") # XXX: RuntimeError inappropriate?
 	return "".join(output)
