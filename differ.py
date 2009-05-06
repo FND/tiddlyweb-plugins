@@ -24,7 +24,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 def init(config):
@@ -66,13 +66,13 @@ def post_request(environ, start_response):
 	except AttributeError:
 		raise HTTP400("missing revision parameter")
 
-	content = compare(rev1, rev2)
+	content = compare_tiddlers(rev1, rev2)
 	return _generate_response(content, environ, start_response)
 
 
-def compare(rev1, rev2):
+def compare_tiddlers(rev1, rev2):
 	"""
-	compare two tiddlers
+	compare two Tiddler instances
 	"""
 	serializer = Serializer("text")
 	serializer.object = rev1
@@ -84,11 +84,16 @@ def compare(rev1, rev2):
 
 def diff(a, b, type=None): # XXX: rename?
 	"""
+	create a diff representation of a string comparison
+
 	optional type "inline" can be used
 	defaults to human-readable line-by-line comparison
 	"""
 	if type == "inline":
 		return generate_inline_diff(a, b)
+	if type == "horizontal": # XXX: rename
+		d = difflib.HtmlDiff()
+		return d.make_file(a.splitlines(), b.splitlines())
 	else:
 		d = difflib.Differ()
 		result = list(d.compare(a.splitlines(), b.splitlines()))
@@ -97,7 +102,7 @@ def diff(a, b, type=None): # XXX: rename?
 
 def generate_inline_diff(a, b): # XXX: currently unused -- TODO: special handling for line-break changes
 	"""
-	compare two single-line strings
+	compare two strings
 
 	returns an "inline" diff using minimal HTML markup (INS and DEL elements)
 	"""
