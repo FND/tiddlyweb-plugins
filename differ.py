@@ -118,7 +118,7 @@ def diff(a, b, format=None): # XXX: rename?
 		return "\n".join(result)
 
 
-def generate_inline_diff(a, b): # TODO: special handling for line-break changes
+def generate_inline_diff(a, b):
 	"""
 	compare two strings, highlighting differences inline
 
@@ -199,4 +199,4 @@ def _html_transform(str):
 
 	also replaces line breaks with BR elements in order to make them visible
 	"""
-	return cgi.escape(str).replace("\n", " <br>\n")
+	return cgi.escape(str).replace("\n", " <br />\n")
