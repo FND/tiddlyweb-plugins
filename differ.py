@@ -2,8 +2,13 @@
 TiddlyWeb plugin to compare tiddler revisions
 
 Usage:
-  GET /diff?rev1=<tiddler>&rev2=<tiddler>
-  POST /diff?rev1=<tiddler>
+  GET /diff?rev1=<tiddler>&rev2=<tiddler>[&format=<format>]
+  POST /diff?rev1=<tiddler>[&format=<format>]
+
+supported formats:
+* human-readable line-by-line comparison (default)
+* "inline" (HTML)
+* "horizontal" (side-by-side; HTML)
 
 tiddler references are of the form bags/<title>[/<revision>]
 (recipes are currently not supported in this context)
@@ -26,7 +31,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 
 def init(config):
@@ -35,14 +40,20 @@ def init(config):
 
 
 def get_request(environ, start_response):
-	rev1, rev2 = _get_revision_params(environ)
+	query = environ["tiddlyweb.query"]
 	store = environ["tiddlyweb.store"]
+
+	rev1_id = _get_query_param("rev1", query)
+	rev2_id = _get_query_param("rev2", query)
 	try:
-		rev1 = _get_tiddler(rev1, store)
-		rev2 = _get_tiddler(rev2, store)
+		rev1 = _get_tiddler(rev1_id, store)
+		rev2 = _get_tiddler(rev2_id, store)
 	except AttributeError:
 		raise HTTP400("missing revision parameter")
-	content = compare(rev1, rev2)
+
+	format = _get_query_param("format", query)
+
+	content = compare_tiddlers(rev1, rev2, format)
 	return _generate_response(content, environ, start_response)
 
 
@@ -54,8 +65,11 @@ def post_request(environ, start_response):
 	serializer.object = rev
 	serializer.from_string(post_content.decode("utf-8"))
 
-	rev1_id, rev2_id = _get_revision_params(environ)
+	query = environ["tiddlyweb.query"]
 	store = environ["tiddlyweb.store"]
+
+	rev1_id = _get_query_param("rev1", query)
+	rev2_id = _get_query_param("rev2", query)
 	try:
 		if not rev1_id:
 			rev1 = rev
@@ -68,11 +82,13 @@ def post_request(environ, start_response):
 	except AttributeError:
 		raise HTTP400("missing revision parameter")
 
-	content = compare_tiddlers(rev1, rev2)
+	format = _get_query_param("format", query)
+
+	content = compare_tiddlers(rev1, rev2, format)
 	return _generate_response(content, environ, start_response)
 
 
-def compare_tiddlers(rev1, rev2):
+def compare_tiddlers(rev1, rev2, format=None):
 	"""
 	compare two Tiddler instances
 	"""
@@ -81,19 +97,19 @@ def compare_tiddlers(rev1, rev2):
 	rev1 = serializer.to_string()
 	serializer.object = rev2
 	rev2 = serializer.to_string()
-	return "<pre>\n%s\n</pre>" % diff(rev1, rev2)
+	return "<pre>\n%s\n</pre>" % diff(rev1, rev2, format)
 
 
-def diff(a, b, type=None): # XXX: rename?
+def diff(a, b, format=None): # XXX: rename?
 	"""
 	create a diff representation of a string comparison
 
-	optional type "inline" can be used
 	defaults to human-readable line-by-line comparison
+	alternative formats available are "inline" and "horizontal"
 	"""
-	if type == "inline":
+	if format == "inline":
 		return generate_inline_diff(a, b)
-	if type == "horizontal": # XXX: rename
+	if format == "horizontal": # XXX: rename
 		d = difflib.HtmlDiff()
 		return d.make_file(a.splitlines(), b.splitlines())
 	else:
@@ -102,7 +118,7 @@ def diff(a, b, type=None): # XXX: rename?
 		return "\n".join(result)
 
 
-def generate_inline_diff(a, b): # XXX: currently unused -- TODO: special handling for line-break changes
+def generate_inline_diff(a, b): # TODO: special handling for line-break changes
 	"""
 	compare two strings, highlighting differences inline
 
@@ -160,25 +176,16 @@ def _resolve_identifier(id):
 	return type, name, title, rev
 
 
-def _get_revision_params(environ):
-	"""
-	retrieve tiddler identifiers from query string
-	"""
-	store = environ["tiddlyweb.store"]
-
-	def get_param(name):
-		rev = environ["tiddlyweb.query"].get(name)
-		if rev:
-			rev = rev[0]
-		return rev
-
-	rev1_id = get_param("rev1")
-	rev2_id = get_param("rev2")
-	return rev1_id, rev2_id
+def _get_query_param(name, query, default=None):
+	value = query.get(name)
+	if value:
+		return value[0]
+	else:
+		return default
 
 
 def _generate_response(content, environ, start_response):
-	serialize_type, mime_type = web.get_serialize_type(environ)
+	serialize_type, mime_type = web.get_serialize_type(environ) # XXX: not suitable here!?
 	cache_header = ("Cache-Control", "no-cache") # ensure accesing latest HEAD revision
 	content_header = ("Content-Type", mime_type)
 	response = [cache_header, content_header]
