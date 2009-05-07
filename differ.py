@@ -17,12 +17,12 @@ POST data (JSON representation of a tiddler) can be used instead of a tiddler
 reference (rev1 or rev2 URL parameter)
 
 To Do:
+* unicode handling
 * tests
 """
 
+import cgi
 import difflib
-
-from cgi import escape
 
 from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
@@ -97,7 +97,7 @@ def compare_tiddlers(rev1, rev2, format=None):
 	rev1 = serializer.to_string()
 	serializer.object = rev2
 	rev2 = serializer.to_string()
-	return "<pre>\n%s\n</pre>" % diff(rev1, rev2, format)
+	return diff(rev1, rev2, format)
 
 
 def diff(a, b, format=None): # XXX: rename?
@@ -128,14 +128,14 @@ def generate_inline_diff(a, b): # TODO: special handling for line-break changes
 	output = []
 	for opcode, a0, a1, b0, b1 in seq.get_opcodes():
 		if opcode == "equal":
-			output.append(escape(seq.a[a0:a1]))
+			output.append(_html_transform(seq.a[a0:a1]))
 		elif opcode == "insert":
-			output.append("<ins>%s</ins>" % escape(seq.b[b0:b1]))
+			output.append("<ins>%s</ins>" % _html_transform(seq.b[b0:b1]))
 		elif opcode == "delete":
-			output.append("<del>%s</del>" % escape(seq.a[a0:a1]))
+			output.append("<del>%s</del>" % _html_transform(seq.a[a0:a1]))
 		elif opcode == "replace":
 			output.append("<del>%s</del><ins>%s</ins>" %
-				(escape(seq.a[a0:a1]), escape(seq.b[b0:b1])))
+				(_html_transform(seq.a[a0:a1]), _html_transform(seq.b[b0:b1])))
 		else:
 			raise RuntimeError("unexpected opcode") # XXX: RuntimeError inappropriate?
 	return "".join(output)
@@ -186,8 +186,17 @@ def _get_query_param(name, query, default=None):
 
 def _generate_response(content, environ, start_response):
 	serialize_type, mime_type = web.get_serialize_type(environ) # XXX: not suitable here!?
-	cache_header = ("Cache-Control", "no-cache") # ensure accesing latest HEAD revision
-	content_header = ("Content-Type", mime_type)
+	cache_header = ("Cache-Control", "no-cache") # ensure accessing latest HEAD revision
+	content_header = ("Content-Type", mime_type) # XXX: should be determined by diff format
 	response = [cache_header, content_header]
 	start_response("200 OK", response)
 	return [content]
+
+
+def _html_transform(str):
+	"""
+	escape a string to be HTML-safe
+
+	also replaces line breaks with BR elements in order to make them visible
+	"""
+	return cgi.escape(str).replace("\n", " <br>\n")
