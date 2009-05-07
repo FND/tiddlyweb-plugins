@@ -43,15 +43,15 @@ def get_request(environ, start_response):
 	query = environ["tiddlyweb.query"]
 	store = environ["tiddlyweb.store"]
 
-	rev1_id = _get_query_param("rev1", query)
-	rev2_id = _get_query_param("rev2", query)
+	rev1_id = query.get("rev1", [None])[0]
+	rev2_id = query.get("rev2", [None])[0]
 	try:
 		rev1 = _get_tiddler(rev1_id, store)
 		rev2 = _get_tiddler(rev2_id, store)
 	except AttributeError:
 		raise HTTP400("missing revision parameter")
 
-	format = _get_query_param("format", query)
+	format = query.get("format", [None])[0]
 
 	content = compare_tiddlers(rev1, rev2, format)
 	return _generate_response(content, environ, start_response)
@@ -68,8 +68,8 @@ def post_request(environ, start_response):
 	query = environ["tiddlyweb.query"]
 	store = environ["tiddlyweb.store"]
 
-	rev1_id = _get_query_param("rev1", query)
-	rev2_id = _get_query_param("rev2", query)
+	rev1_id = query.get("rev1", [None])[0]
+	rev2_id = query.get("rev2", [None])[0]
 	try:
 		if not rev1_id:
 			rev1 = rev
@@ -82,7 +82,7 @@ def post_request(environ, start_response):
 	except AttributeError:
 		raise HTTP400("missing revision parameter")
 
-	format = _get_query_param("format", query)
+	format = query.get("format", [None])[0]
 
 	content = compare_tiddlers(rev1, rev2, format)
 	return _generate_response(content, environ, start_response)
@@ -174,14 +174,6 @@ def _resolve_identifier(id):
 		rev = 0 # HEAD
 	type = type[:-1] # strip plural
 	return type, name, title, rev
-
-
-def _get_query_param(name, query, default=None):
-	value = query.get(name)
-	if value:
-		return value[0]
-	else:
-		return default
 
 
 def _generate_response(content, environ, start_response):
