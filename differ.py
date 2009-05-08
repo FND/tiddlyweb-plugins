@@ -5,14 +5,14 @@ Usage:
   GET /diff?rev1=<tiddler>&rev2=<tiddler>[&format=<format>]
   POST /diff?rev1=<tiddler>[&format=<format>]
 
+tiddler references are of the form bags/<title>[/<revision>]
+(recipes are currently not supported in this context)
+
 supported formats:
 * human-readable line-by-line comparison (default; plain text)
 * "unified" (plain text)
 * "inline" (HTML)
 * "horizontal" (side-by-side; HTML)
-
-tiddler references are of the form bags/<title>[/<revision>]
-(recipes are currently not supported in this context)
 
 POST data (JSON representation of a tiddler) can be used instead of a tiddler
 reference (rev1 or rev2 URL parameter)
