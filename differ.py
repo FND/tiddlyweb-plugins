@@ -6,7 +6,8 @@ Usage:
   POST /diff?rev1=<tiddler>[&format=<format>]
 
 supported formats:
-* human-readable line-by-line comparison (default)
+* human-readable line-by-line comparison (default; plain text)
+* "unified" (plain text)
 * "inline" (HTML)
 * "horizontal" (side-by-side; HTML)
 
@@ -31,7 +32,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 
 def init(config):
@@ -105,15 +106,17 @@ def diff(a, b, format=None): # XXX: rename?
 	create a diff representation of a string comparison
 
 	defaults to human-readable line-by-line comparison
-	alternative formats available are "inline" and "horizontal"
+	alternative formats available are "unified", "horizontal" and "inline"
 	"""
-	if format == "inline":
-		return generate_inline_diff(a, b)
-	if format == "horizontal": # XXX: rename
+	if format == "unified":
+		return "\n".join(difflib.unified_diff(a.splitlines(), b.splitlines()))
+	elif format == "horizontal": # XXX: rename
 		d = difflib.HtmlDiff()
-		return d.make_file(a.splitlines(), b.splitlines())
+		return d.make_file(a.splitlines(), b.splitlines()) # XXX: use make_table?!
+	elif format == "inline":
+		return generate_inline_diff(a, b)
 	else:
-		d = difflib.Differ()
+		d = difflib.Differ() # XXX: use difflib.ndiff?
 		result = list(d.compare(a.splitlines(), b.splitlines()))
 		return "\n".join(result)
 
