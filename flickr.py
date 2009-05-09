@@ -4,12 +4,20 @@ TiddlyWeb StorageInterface interfacing with Flickr
 
 Tiddler Mapping:
 * bag ~ user
-* tag ~ tag
+* title ~ ID
+* created ~ date uploaded
+* tags ~ tags
 * text ~ description
+* fields.label ~ title
 * fields.source ~ URI
+* fields.license ~ license
+
+To Do:
+* cache tiddlers when generating bag
 """
 
 import urllib2
+import logging
 
 import simplejson
 
@@ -34,19 +42,19 @@ class Store(StorageInterface):
 		logging.debug("retrieving bag: %s" % bag.name)
 
 		bag.desc = None # TODO
-		bag.policy = None # TODO
+		#bag.policy = None # TODO
 
 		if not (hasattr(bag, "skinny") and bag.skinny):
 			for photo in _get_photos(bag.name):
-				tiddler = _convert_photo_to_tiddler(photo)
+				tiddler = _generate_tiddler(photo["id"])
 				bag.add_tiddler(tiddler)
 
 		return bag
 
 	def tiddler_get(self, tiddler):
 		logging.debug("retrieving tiddler %s from %s" % (tiddler.title, tiddler.bag))
-		photo =  _get_photo(tiddler.title)
-		return _convert_photo_to_tiddler(photo)
+		tiddler = _generate_tiddler(tiddler.title)
+		return tiddler
 
 
 def _get_photos(user_id):
@@ -63,7 +71,7 @@ def _get_photo(id):
 	data = urllib2.urlopen(uri)
 	data = simplejson.loads(data.read())
 	photo = data["query"]["results"]["photo"]
-	 # TODO: convert dateuploaded to date object, resolve license
+	 # TODO: convert dateuploaded to date object, resolve license, store source URI
 	tags = []
 	try:
 		for tag in photo["tags"]["tag"]:
@@ -74,10 +82,9 @@ def _get_photo(id):
 	return photo
 
 
-def _convert_photo_to_tiddler(photo):
-	id = photo["id"]
-	tiddler = Tiddler(id)
-	photo = _get_photo(id)
+def _generate_tiddler(photo_id):
+	tiddler = Tiddler(photo_id)
+	photo = _get_photo(photo_id)
 	tiddler.created = photo["dateuploaded"] # TODO: convert to tiddly timestamp
 	tiddler.text = photo["description"]
 	tiddler.tags = photo["tags"]
