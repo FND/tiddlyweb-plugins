@@ -1,4 +1,5 @@
 """
+Differ
 TiddlyWeb plugin to compare tiddler revisions
 
 Usage:
@@ -121,7 +122,7 @@ def diff(a, b, format=None): # XXX: rename?
 		return "\n".join(result)
 
 
-def generate_inline_diff(a, b):
+def generate_inline_diff(a, b): # TODO: optionally strip unchanged blocks
 	"""
 	compare two strings, highlighting differences inline
 
