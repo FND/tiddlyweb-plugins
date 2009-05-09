@@ -8,9 +8,6 @@ Tiddler Mapping:
 * created ~ date uploaded
 * tags ~ tags
 * text ~ description
-* fields.label ~ title
-* fields.source ~ URI
-* fields.license ~ license
 
 To Do:
 * cache tiddlers when generating bag
@@ -55,6 +52,12 @@ class Store(StorageInterface):
 	def tiddler_get(self, tiddler):
 		logging.debug("retrieving tiddler %s from %s" % (tiddler.title, tiddler.bag))
 		tiddler = _populate_tiddler(tiddler)
+		img = "http://farm%s.static.flickr.com/%s/%s_%s.jpg" % (
+			tiddler.fields["flickr.farm"], tiddler.fields["flickr.server"],
+			tiddler.title, tiddler.fields["flickr.secret"])
+		link = "http://www.flickr.com/photos/%s/%s/" % (tiddler.bag, tiddler.title)
+		label = tiddler.fields["flickr.title"]
+		tiddler.text += "\n\n[img[%s|%s][%s]]" % (label, img, link) # XXX: for demo purposes only
 		return tiddler
 
 
@@ -67,7 +70,7 @@ def _get_photos(user_id):
 
 
 def _get_photo(id):
-	uri_template = "http://query.yahooapis.com/v1/public/yql?q=SELECT%20title%2C%20dateuploaded%2C%20description%2C%20tags%2C%20license%20FROM%20flickr.photos.info%20WHERE%20photo_id%3D%22%s%22&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env"
+	uri_template = "http://query.yahooapis.com/v1/public/yql?q=SELECT%20title%2C%20dateuploaded%2C%20description%2C%20tags%2C%20license%2C%20farm%2C%20server%2C%20secret%20FROM%20flickr.photos.info%20WHERE%20photo_id%3D%22%s%22&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env"
 	uri = uri_template.replace("%s", urllib2.quote(id)) # N.B.: regular string substitution does not work well with URL-encoded strings
 	data = urllib2.urlopen(uri)
 	data = simplejson.loads(data.read())
@@ -88,6 +91,9 @@ def _populate_tiddler(tiddler):
 	tiddler.created = photo["dateuploaded"] # TODO: convert to tiddly timestamp
 	tiddler.text = photo["description"]
 	tiddler.tags = photo["tags"]
-	tiddler.fields["label"] = photo["title"]
-	tiddler.fields["license"] = photo["license"]
+	tiddler.fields["flickr.title"] = photo["title"]
+	tiddler.fields["flickr.farm"] = photo["farm"]
+	tiddler.fields["flickr.server"] = photo["server"]
+	tiddler.fields["flickr.secret"] = photo["secret"]
+	tiddler.fields["flickr.license"] = photo["license"]
 	return tiddler
