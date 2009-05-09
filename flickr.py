@@ -46,14 +46,15 @@ class Store(StorageInterface):
 
 		if not (hasattr(bag, "skinny") and bag.skinny):
 			for photo in _get_photos(bag.name):
-				tiddler = _generate_tiddler(photo["id"])
+				tiddler = Tiddler(photo["id"])
+				tiddler = _populate_tiddler(tiddler)
 				bag.add_tiddler(tiddler)
 
 		return bag
 
 	def tiddler_get(self, tiddler):
 		logging.debug("retrieving tiddler %s from %s" % (tiddler.title, tiddler.bag))
-		tiddler = _generate_tiddler(tiddler.title)
+		tiddler = _populate_tiddler(tiddler)
 		return tiddler
 
 
@@ -82,9 +83,8 @@ def _get_photo(id):
 	return photo
 
 
-def _generate_tiddler(photo_id):
-	tiddler = Tiddler(photo_id)
-	photo = _get_photo(photo_id)
+def _populate_tiddler(tiddler):
+	photo = _get_photo(tiddler.title)
 	tiddler.created = photo["dateuploaded"] # TODO: convert to tiddly timestamp
 	tiddler.text = photo["description"]
 	tiddler.tags = photo["tags"]
