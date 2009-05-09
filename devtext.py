@@ -40,12 +40,12 @@ class Store(Text):
 
     def list_recipes(self):
         recipes = [file.replace('.recipe', '') for file in self._files_in_dir(self._store_root())
-			if file.endswith('.recipe')]
+            if file.endswith('.recipe')]
         return [Recipe(urllib.unquote(recipe).decode('utf-8')) for recipe in recipes]
 
     def list_users(self):
         users = [file.replace('.user', '') for file in self._files_in_dir(self._store_root())
-			if file.endswith('.user')]
+            if file.endswith('.user')]
         return [User(urllib.unquote(user).decode('utf-8')) for user in users]
 
     def list_tiddler_revisions(self, tiddler):
@@ -175,4 +175,4 @@ class Store(Text):
 
     def _files_in_dir(self, path):
         return [x for x in os.listdir(path) if
-			not x.startswith('.') and not x == 'policy' and not x == 'description']
+            not x.startswith('.') and not x == 'policy' and not x == 'description']
