@@ -56,7 +56,7 @@ class Store(StorageInterface):
 			tiddler.fields["flickr.farm"], tiddler.fields["flickr.server"],
 			tiddler.title, tiddler.fields["flickr.secret"])
 		link = "http://www.flickr.com/photos/%s/%s/" % (tiddler.bag, tiddler.title)
-		label = tiddler.fields["flickr.title"]
+		label = tiddler.fields["flickr.caption"]
 		tiddler.text += "\n\n[img[%s|%s][%s]]" % (label, img, link) # XXX: for demo purposes only
 		return tiddler
 
@@ -89,9 +89,9 @@ def _get_photo(id):
 def _populate_tiddler(tiddler):
 	photo = _get_photo(tiddler.title)
 	tiddler.created = photo["dateuploaded"] # TODO: convert to tiddly timestamp
-	tiddler.text = photo["description"]
+	tiddler.text = photo["description"] or ""
 	tiddler.tags = photo["tags"]
-	tiddler.fields["flickr.title"] = photo["title"]
+	tiddler.fields["flickr.caption"] = photo["title"]
 	tiddler.fields["flickr.farm"] = photo["farm"]
 	tiddler.fields["flickr.server"] = photo["server"]
 	tiddler.fields["flickr.secret"] = photo["secret"]
