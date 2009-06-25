@@ -3,16 +3,15 @@ Concise HTML
 serializer providing a concise overview of bags, recipes or tiddlers
 
 TODO:
-* rename?
+* use HTMLPresenter
 * links for browsing
-* valid HTML
-* templating
+* templating (jinja2)
 """
 
 from tiddlyweb.serializations.html import Serialization as HTML_Serializer
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 def init(config):
@@ -32,7 +31,7 @@ class Serialization(HTML_Serializer):
 	def tiddler_as(self, tiddler):
 		template = "<html><body><table>%s</table>%s</body></html>" # TODO: column headings
 		full_text = HTML_Serializer.tiddler_as(self, tiddler)
-		return template % (_render_tiddler(tiddler), full_text)
+		return template % (_render_tiddler(tiddler), full_text) # XXX: leads to odd composition of content
 
 
 def _render_tiddler(tiddler, hide_rev=False):
