@@ -4,6 +4,7 @@ serializer providing a concise overview of bags, recipes or tiddlers
 
 TODO:
 * use HTMLPresenter
+* replace HTML serializer
 * links for browsing
 * templating (jinja2)
 """
@@ -11,7 +12,7 @@ TODO:
 from tiddlyweb.serializations.html import Serialization as HTML_Serializer
 
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 def init(config):
@@ -25,7 +26,7 @@ class Serialization(HTML_Serializer):
 
 	def list_tiddlers(self, bag):
 		template = "<html><body><table>%s</table></body></html>" # TODO: column headings
-		tiddlers = [_render_tiddler(t, bag.revbag) for t in bag.list_tiddlers()] # XXX: revbag handling incorrect?
+		tiddlers = [_render_tiddler(t) for t in bag.list_tiddlers()]
 		return template % "\n".join(tiddlers)
 
 	def tiddler_as(self, tiddler):
@@ -34,17 +35,10 @@ class Serialization(HTML_Serializer):
 		return template % (_render_tiddler(tiddler), full_text) # XXX: leads to odd composition of content
 
 
-def _render_tiddler(tiddler, hide_rev=False):
+def _render_tiddler(tiddler):
 	"""
 	represent Tiddler instance as HTML table row
-
-	If hide_rev is True, revision numbers are omitted.
 	"""
-	if hide_rev:
-		template = "<tr><td>%s</td><td>%s</td><td>%s</td>"
-		output = template % (tiddler.modified, tiddler.title, tiddler.modifier)
-	else:
-		template = "<tr><td>%s</td><td>%s</td><td>#%s</td><td>%s</td>"
-		output = template % (tiddler.modified, tiddler.title, tiddler.revision,
-			tiddler.modifier)
-	return output
+	template = "<tr><td>%s</td><td>%s</td><td>#%s</td><td>%s</td>"
+	return template % (tiddler.modified, tiddler.title, tiddler.revision,
+		tiddler.modifier)
