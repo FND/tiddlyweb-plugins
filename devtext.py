@@ -31,11 +31,13 @@ class Store(Text):
     def __init__(self, environ={}):
         self.environ = environ
         self.serializer = Serializer('text')
+        store_config = self.environ['tiddlyweb.config']['server_store'][1]
+        self._root = store_config['store_root']
         if not os.path.exists(self._store_root()):
             os.mkdir(self._store_root())
 
     def list_bags(self):
-        bags = self._dirs_in_dir(self._store_root())
+        bags = self._bag_filenames()
         return [Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags]
 
     def list_recipes(self):
@@ -59,16 +61,20 @@ class Store(Text):
         except OSError, exc:
             raise NoBagError('unable to list tiddlers in bag: %s' % exc)
         for filename in tiddlers:
-            title = None
-            if filename.endswith('.tid'):
-                title = urllib.unquote(filename[:-4]).decode('utf-8')
-            elif filename.endswith('.js'):
-                title = urllib.unquote(filename[:-3]).decode('utf-8')
+            title = self._tiddler_title_from_file(filename)
             if title:
                 bag.add_tiddler(Tiddler(title))
         bag.desc = self._read_bag_description(bag_path)
         bag.policy = self._read_policy(bag_path)
         return bag
+
+    def _tiddler_title_from_file(self, filename):
+        title = None
+        if filename.endswith('.tid'):
+            title = urllib.unquote(filename[:-4]).decode('utf-8')
+        elif filename.endswith('.js'):
+            title = urllib.unquote(filename[:-3]).decode('utf-8')
+        return title
 
     def tiddler_put(self, tiddler):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
@@ -107,6 +113,45 @@ class Store(Text):
             raise
         except Exception, exc:
             raise IOError('unable to delete %s: %s' % (tiddler.title, exc))
+
+    def search(self, search_query):
+        """
+        Search in the store for tiddlers that match search_query.
+        This is intentionally simple, slow and broken to encourage overriding.
+        """
+        bag_filenames = self._bag_filenames()
+        found_tiddlers = []
+
+        query = search_query.lower()
+
+        for bagname in bag_filenames:
+            bagname = urllib.unquote(bagname).decode('utf-8')
+            tiddler_dir = self._tiddlers_dir(bagname)
+            tiddler_files = self._files_in_dir(tiddler_dir)
+            for tiddler_name in (self._tiddler_title_from_file(filename) for filename in tiddler_files):
+                tiddler = Tiddler(tiddler_name, bagname)
+                try:
+                    revision_id = self.list_tiddler_revisions(tiddler)[0]
+                    if query in tiddler.title.lower():
+                        found_tiddlers.append(tiddler)
+                        continue
+                    tiddler_file = codecs.open(
+                        self._tiddler_full_filename(tiddler, revision_id),
+                        encoding='utf-8')
+                    for line in tiddler_file:
+                        if query in line.lower():
+                            found_tiddlers.append(tiddler)
+                            break
+                except (OSError, NoTiddlerError), exc:
+                    logging.warn('malformed tiddler during search: %s:%s' %
+                            (bagname, tiddler_name))
+        return found_tiddlers
+
+    def _bag_filenames(self):
+        """
+        List the filenames that are bags.
+        """
+        return self._dirs_in_dir(self._store_root())
 
     def _bag_path(self, bag_name):
         try:
