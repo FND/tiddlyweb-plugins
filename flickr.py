@@ -18,8 +18,8 @@ import logging
 
 import simplejson
 
-from tiddlyweb.stores import StorageInterface
 from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.stores import StorageInterface
 
 
 class Store(StorageInterface):

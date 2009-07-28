@@ -5,6 +5,7 @@ serializer providing a concise overview of bags, recipes or tiddlers
 TODO:
 * use HTMLPresenter
 * replace HTML serializer
+* provide full-tiddler representation for collections
 * links for browsing
 * templating (jinja2)
 """
