@@ -16,6 +16,8 @@ from tiddlyweb.stores import StorageInterface
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 
+from tiddlywebplugins import get_store
+
 
 default_tiddler_count = 10
 
@@ -27,12 +29,12 @@ def init(config):
 
 def get_request(environ, start_response):
 	# register store
-	environ["tiddlyweb.config"]["server_store"] = ["pseudostore", None]
+	environ["tiddlyweb.config"]["server_store"] = [__name__, None]
 
 	query = environ["tiddlyweb.query"]
 	tiddler_count = query.get("tiddlers", [None])[0] or default_tiddler_count
 
-	store = environ["tiddlyweb.store"]
+	store = get_store(environ["tiddlyweb.config"])
 	bag = Bag(str(tiddler_count))
 	bag = store.get(bag)
 	# populate tiddlers in bag
