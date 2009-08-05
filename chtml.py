@@ -10,7 +10,7 @@ TODO:
 * templating (jinja2)
 """
 
-from tiddlyweb.serializations.html import Serialization as HTML_Serializer
+from tiddlyweb.serializations.html import Serialization as HTMLSerializer
 
 
 __version__ = "0.1.2"
@@ -23,7 +23,7 @@ def init(config):
 	config["serializers"][content_type] = [__name__, "text/html; charset=UTF-8"]
 
 
-class Serialization(HTML_Serializer):
+class Serialization(HTMLSerializer):
 
 	def list_tiddlers(self, bag):
 		template = "<html><body><table>%s</table></body></html>" # TODO: column headings
