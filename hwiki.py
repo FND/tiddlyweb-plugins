@@ -1,14 +1,16 @@
 """
 Hybrid TiddlyWiki
-serializer generating a TiddlyWiki document with baked-in static content
+serializer generating accessible TiddlyWiki documents
 
-Renders the tiddlers listed in an index tiddler into the document's
+Renders a static representation of tiddlers into the document's
 NOSCRIPT section.
 
 Static tiddlers are listed one per line in the tiddler specified via
-config["static_index"] (default value is "StaticContentIndex").
+config["static_index"] (default value is "DefaultTiddlers").
 
 TODO:
+* unit tests
+* efficiency enhancements when retrieving tiddlers
 * support filter expressions (e.g. [tag[static]]) in _read_bracketed_list
 """
 
@@ -19,12 +21,16 @@ from tiddlyweb.wikitext import render_wikitext
 
 from tiddlywebwiki.serialization import Serialization as WikiSerializer
 
-from tiddlywebplugins import get_store
-
 
 __version__ = "0.1.0"
 
-tiddler_template = '<h3>%s</h3>\n<div class="tiddler">%s</div>'
+default_static_index = "DefaultTiddlers"
+tiddler_template = """
+<h3>%s</h3>
+<div class="tiddler">
+%s
+</div>
+"""
 
 
 def init(config):
@@ -37,10 +43,13 @@ def init(config):
 class Serialization(WikiSerializer):
 
 	def _no_script(self, url):
+		"""
+		returns static HTML representation of a list of tiddlers
+		"""
 		try:
 			static_index = self.environ["tiddlyweb.config"]["static_index"]
 		except KeyError: # default
-			static_index = "StaticContentIndex"
+			static_index = default_static_index
 
 		store = self.environ["tiddlyweb.store"]
 		routing_args = self.environ["wsgiorg.routing_args"][1]
@@ -55,7 +64,7 @@ class Serialization(WikiSerializer):
 			bag = Bag(bag)
 			bag = store.get(bag)
 			tiddlers = control.get_tiddlers_from_bag(bag)
-		tiddlers = _create_tiddler_dict(tiddlers)
+		tiddlers = dict([(tiddler.title, tiddler) for tiddler in tiddlers])
 
 		static_tiddlers = []
 		try:
@@ -76,11 +85,10 @@ class Serialization(WikiSerializer):
 
 
 def _read_bracketed_list(items):
+	"""
+	retrieve items from bracketed list
+
+	items argument is a space-separated list with individual items optionally
+	enclosed in double brackets
+	"""
 	return items.split("\n") # TODO: proper implementation
-
-
-def _create_tiddler_dict(tiddlers): # TODO: rename
-	hashmap = {}
-	for tiddler in tiddlers:
-		hashmap[tiddler.title] = tiddler
-	return hashmap
