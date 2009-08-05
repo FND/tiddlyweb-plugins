@@ -24,6 +24,8 @@ from tiddlywebplugins import get_store
 
 __version__ = "0.1.0"
 
+tiddler_template = '<h3>%s</h3>\n<div class="tiddler">%s</div>'
+
 
 def init(config):
 	# register serializer
@@ -62,7 +64,8 @@ class Serialization(WikiSerializer):
 				tiddler = tiddlers.get(title)
 				try:
 					text = render_wikitext(tiddler, self.environ)
-					static_tiddlers.append('<div class="tiddler">%s</div>' % text)
+					static_tiddlers.append(tiddler_template %
+						(tiddler.title, text))
 				except AttributeError: # tiddler does not exist
 					pass
 		except KeyError: # static_index tiddler does not exist
