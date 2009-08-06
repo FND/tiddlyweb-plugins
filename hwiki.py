@@ -22,7 +22,7 @@ from tiddlyweb.wikitext import render_wikitext
 from tiddlywebwiki.serialization import Serialization as WikiSerializer
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 default_static_index = "DefaultTiddlers"
 tiddler_template = """
@@ -91,4 +91,4 @@ def _read_bracketed_list(items):
 	items argument is a space-separated list with individual items optionally
 	enclosed in double brackets
 	"""
-	return items.split("\n") # TODO: proper implementation
+	return [item.strip("[").strip("]") for item in items.split("\n")] # TODO: proper implementation
