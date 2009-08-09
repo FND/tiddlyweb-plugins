@@ -18,7 +18,7 @@ supported formats:
 POST data (JSON representation of a tiddler) can be used instead of a tiddler
 reference (rev1 or rev2 URL parameter)
 
-To Do:
+TODO:
 * unicode handling
 * tests
 """
@@ -37,7 +37,6 @@ __version__ = "0.4.0"
 
 
 def init(config):
-	# extend urls.map
 	config["selector"].add("/diff", GET=get_request, POST=post_request)
 
 

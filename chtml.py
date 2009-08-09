@@ -17,7 +17,7 @@ __version__ = "0.1.2"
 
 
 def init(config):
-	# add serializer to config
+	# register serializer
 	content_type = "text/x-chtml" # XXX: x-chtml is not suitable
 	config["extension_types"]["chtml"] = content_type
 	config["serializers"][content_type] = [__name__, "text/html; charset=UTF-8"]

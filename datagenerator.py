@@ -22,7 +22,6 @@ default_tiddler_count = 10
 
 
 def init(config):
-	# extend urls.map
 	config["selector"].add("/generator[.{format}]", GET=get_request) # XXX: rename?
 
 

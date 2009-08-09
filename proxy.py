@@ -17,7 +17,7 @@ Example:
 		"proxy_whitelist": ["tiddlyspot.com"]
 	}
 
-To Do:
+TODO:
 * tests
 """
 
@@ -36,7 +36,6 @@ whitelist = []
 
 
 def init(config):
-	# extend urls.map
 	config["selector"].add("/proxy/{url:any}", GET=get_request)
 
 

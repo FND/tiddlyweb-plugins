@@ -8,7 +8,7 @@ Usage:
 Accepts JSON format described here:
     http://github.com/guides/post-receive-hooks
 
-To Do:
+TODO:
 * use custom fields instead of dumping data in tiddler.text
 * tests
 """
@@ -23,7 +23,6 @@ __version__ = "0.1.0"
 
 
 def init(config):
-	# extend urls.map
 	config["selector"].add("/commit", POST=post_request)
 
 

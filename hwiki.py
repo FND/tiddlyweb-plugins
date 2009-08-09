@@ -6,7 +6,7 @@ Renders a static representation of tiddlers into the document's
 NOSCRIPT section.
 
 Static tiddlers are listed one per line in the tiddler specified via
-config["static_index"] (default value is "DefaultTiddlers").
+config["static_index"] (defaults to "DefaultTiddlers").
 
 TODO:
 * unit tests

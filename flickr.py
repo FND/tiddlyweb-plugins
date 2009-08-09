@@ -9,7 +9,7 @@ Tiddler Mapping:
 * tags ~ tags
 * text ~ description
 
-To Do:
+TODO:
 * cache tiddlers when generating bag
 """
 
