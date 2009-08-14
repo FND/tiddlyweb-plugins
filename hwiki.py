@@ -8,6 +8,9 @@ NOSCRIPT section.
 Static tiddlers are listed one per line in the tiddler specified via
 config["static_index"] (defaults to "DefaultTiddlers").
 
+N.B.: This plugin must be invoked *after* tiddlywebwiki.plugin, and
+should thus be listed accordingly in system_plugins.
+
 TODO:
 * unit tests
 * efficiency enhancements when retrieving tiddlers
