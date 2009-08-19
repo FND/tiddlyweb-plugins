@@ -21,7 +21,7 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.web import util as web
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 content_type = "text/x-commit"
 
@@ -50,7 +50,7 @@ def render(tiddler, environ):
 	"""
 	render a commit tiddler as HTML
 	"""
-	template = "<pre>%s\n\n%s\n\n%s</pre>"
+	template = '<a href="%s">origin</a>\n<pre>%s</pre>\n<p>%s</p>'
 	files = "\n".join(
 		_list_file_changes(tiddler, "added", "+") +
 		_list_file_changes(tiddler, "removed", "-") +
