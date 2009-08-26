@@ -22,10 +22,10 @@ import simplejson as json
 
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.web import util as web
-from tiddlyweb.web.http import HTTP403
+from tiddlyweb.web.http import HTTP400, HTTP403
 
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 content_type = "text/x-commit"
 bag_name = "commits"
@@ -48,11 +48,14 @@ def post_request(environ, start_response):
 		query = environ["tiddlyweb.query"]
 		token = query.get("auth", [None])[0]
 		if token not in auth_tokens:
-			raise HTTP403("unauthorized") # XXX: appropriate?
+			raise HTTP403("unauthorized")
 
 	length = int(environ["CONTENT_LENGTH"])
 	data = environ["wsgi.input"].read(length).decode("utf-8") # XXX: simplejson takes care of decoding!?
-	data = json.loads(data) # XXX: use load, not loads?
+	try:
+		data = json.loads(data) # XXX: use load, not loads?
+	except ValueError:
+		raise HTTP400("unable to decode payload")
 
 	store = environ["tiddlyweb.store"]
 	for commit in data["commits"]:
