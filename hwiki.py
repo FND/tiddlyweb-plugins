@@ -17,6 +17,8 @@ TODO:
 * support filter expressions (e.g. [tag[static]]) in _read_bracketed_list
 """
 
+import re
+
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb import control
@@ -25,7 +27,7 @@ from tiddlyweb.wikitext import render_wikitext
 from tiddlywebwiki.serialization import Serialization as WikiSerializer
 
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 default_static_index = "DefaultTiddlers"
 tiddler_template = """
@@ -87,11 +89,17 @@ class Serialization(WikiSerializer):
 		return "%s\n%s" % (intro, "\n".join(static_tiddlers))
 
 
-def _read_bracketed_list(items):
+def _read_bracketed_list(txt):
 	"""
 	retrieve items from bracketed list
 
-	items argument is a space-separated list with individual items optionally
-	enclosed in double brackets
+	items argument is a space or newline-separated list with individual items
+	optionally enclosed in double brackets
+
+	N.B.: Does not preserve order.
 	"""
-	return [item.strip("[").strip("]") for item in items.split("\n")] # TODO: proper implementation
+	pattern = r"\s*\[\[(.*?)\]\]\s*"
+	complex_items = re.findall(pattern, txt)
+	simple_items = re.sub(pattern, " ", txt).strip()
+	simple_items = re.split(r"[ \n]", simple_items)
+	return [item for item in simple_items + complex_items if item] # XXX: inefficient way to strip empty list items!?
