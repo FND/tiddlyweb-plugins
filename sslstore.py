@@ -7,11 +7,13 @@ additional policy checks.
 
 TODO:
 * catch SecureConnectionError (middleware?)
+* do not raise error when listing bags (merely hide secure bags?)
 * rename?
 * documentation
 ** description
 ** server_store config (module name changes, actual module name moved to store config)
 * auto-redirect on error?
+* provide init function for use as system plugin (not twanager plugin!?)
 """
 
 import logging
@@ -33,10 +35,11 @@ class SecureConnectionError(Exception): # TODO: rename?
 class Store(StorageInterface):
 
 	def __init__(self, environ=None):
+		logging.debug("initializing SSL Store")
 		super(self.__class__, self).__init__(environ)
 		config = self.environ["tiddlyweb.config"]
 		self.ssl_bags = config["ssl_bags"] # intentionally not providing empty fallback -- XXX: rename?
-		real_store = config["server_store"][1]["store_module"] # XXX: rename?
+		real_store = config["server_store"][1]["store_module"] # XXX: rename? -- TODO: use pop method to keep config clean?
 		self.real_store = Storage(real_store, self.environ)
 
 	def recipe_delete(self, recipe):
