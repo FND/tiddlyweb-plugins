@@ -1,6 +1,3 @@
-import sys
-sys.path.append(".")
-
 from py.test import raises
 
 from fixtures import _teststore, bagone, bagtwo, bagthree, bagfour # XXX: only available to core

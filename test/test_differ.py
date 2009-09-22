@@ -1,10 +1,3 @@
-"""
-Test Differ plugin.
-"""
-
-import sys
-sys.path.append(".")
-
 import differ
 
 
