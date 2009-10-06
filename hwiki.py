@@ -27,7 +27,7 @@ from tiddlyweb.wikitext import render_wikitext
 from tiddlywebwiki.serialization import Serialization as WikiSerializer
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 default_static_index = "DefaultTiddlers"
 tiddler_template = """
@@ -85,7 +85,7 @@ class Serialization(WikiSerializer):
 		except KeyError: # static_index tiddler does not exist
 			pass
 
-		intro = super(self.__class__, self)._no_script(url)
+		intro = super(Serialization, self)._no_script(url)
 		return "%s\n%s" % (intro, "\n".join(static_tiddlers))
 
 

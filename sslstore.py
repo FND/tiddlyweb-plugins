@@ -22,7 +22,7 @@ from tiddlyweb.store import Store as Storage
 from tiddlyweb.stores import StorageInterface
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 class SecureConnectionError(Exception): # TODO: rename?
@@ -36,7 +36,7 @@ class Store(StorageInterface):
 
 	def __init__(self, environ=None):
 		logging.debug("initializing SSL Store")
-		super(self.__class__, self).__init__(environ)
+		super(Store, self).__init__(environ)
 		config = self.environ["tiddlyweb.config"]
 		self.ssl_bags = config["ssl_bags"] # intentionally not providing empty fallback -- XXX: rename?
 		real_store = config["server_store"][1]["store_module"] # XXX: rename? -- TODO: use pop method to keep config clean?
