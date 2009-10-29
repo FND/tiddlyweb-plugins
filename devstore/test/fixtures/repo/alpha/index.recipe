@@ -1,0 +1,3 @@
+tiddler: title.tid
+tiddler: tiddlers/lorem.tid
+plugin: plugins/foo.js
