@@ -22,14 +22,14 @@ from tiddlyweb.store import Store as Storage
 from tiddlyweb.stores import StorageInterface
 
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 class SecureConnectionError(Exception): # TODO: rename?
-    """
-    Traffic encryption (HTTPS/SSL) is required.
-    """
-    pass
+	"""
+	Traffic encryption (HTTPS/SSL) is required.
+	"""
+	pass
 
 
 class Store(StorageInterface):
@@ -91,7 +91,7 @@ class Store(StorageInterface):
 
 	def user_put(self, user):
 		logging.debug("put user %s" % user)
-		return self.real_store.put(user)
+		self.real_store.put(user)
 
 	def list_recipes(self):
 		logging.debug("list recipes")
