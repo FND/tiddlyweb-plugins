@@ -1,4 +1,4 @@
 recipe: ../alpha/index.recipe
-tiddler: title.tid
+tiddler: tiddlers/SiteTitle.tid
 tiddler: tiddlers/ipsum.tid
 plugin: plugins/bar.js
