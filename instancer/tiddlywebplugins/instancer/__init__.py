@@ -1,10 +1,10 @@
 """
-utility module for TiddlyWeb instances
+utility package for TiddlyWeb instances
 """
 
 import os
 
-import sourcer
+import sourcer # XXX: use explicit tiddlywebplugins.instancer.sourcer (breaks tests due to "twp" namespace issue)
 
 from time import time
 from random import random
