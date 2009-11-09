@@ -2,8 +2,8 @@
 
 clean:
 	find . -name "*.pyc" | xargs rm || true
-	rm -r dist || true
-	rm -r build || true
+	rm -r build dist || true
+	rm -r .figleaf figleaf source_modules.txt || true
 
 test:
 	py.test -x test
