@@ -4,8 +4,8 @@ from urllib2 import HTTPError, URLError
 
 from py.test import raises
 
-from twp.instancer.sourcer import from_list, from_source, from_plugin, \
-	from_tid, from_tiddler, _get_uri, _get_title_from_uri
+from tiddlywebplugins.instancer.sourcer import from_list, from_source, \
+	from_plugin, from_tid, from_tiddler, _get_uri, _get_title_from_uri
 
 
 FIXTURES_DIR = "test/fixtures"

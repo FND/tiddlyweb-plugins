@@ -2,7 +2,7 @@ import os
 
 from setuptools import setup, find_packages
 
-from twp.instancer import __version__
+from tiddlywebplugins.instancer import __version__
 
 
 setup(
@@ -15,6 +15,6 @@ setup(
 	author = "FND",
 	author_email = "FNDo@gmx.net",
 	namespace_packages = ["tiddlywebplugins"],
-	packages = find_packages(exclude=["test", "twp"]),
+	packages = find_packages(exclude=["test"]),
 	install_requires = ["setuptools", "tiddlyweb", "tiddlywebplugins.utils"] # XXX: include optional tiddlywebwiki?
 )
