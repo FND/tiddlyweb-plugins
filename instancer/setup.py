@@ -2,14 +2,13 @@ import os
 
 from setuptools import setup, find_packages
 
-
-VERSION = "0.1"
+from twp.instancer import __version__
 
 
 setup(
         namespace_packages = ["tiddlywebplugins"],
         name = "tiddlywebplugins.instancer",
-        version = VERSION,
+        version = __version__,
         url = "http://pypi.python.org/pypi/tiddlywebplugins.instancer",
         description = "A TiddlyWeb plugin to simplify instance management for verticals.",
         long_description = file(os.path.join(os.path.dirname(__file__), "README")).read(),
