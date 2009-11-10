@@ -10,11 +10,11 @@ from time import time
 from random import random
 
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.store import Store
 from tiddlyweb.util import sha
+from tiddlywebplugins.utils import get_store
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 CONFIG_NAME = "tiddlywebconfig.py"
 
@@ -38,6 +38,7 @@ class Instance(object):
 		self.root = os.path.abspath(directory)
 		self.init_config = init_config
 		self.instance_config = instance_config
+		self.store = get_store(self.init_config)
 
 	def spawn(self):
 		os.mkdir(self.root)
@@ -47,9 +48,7 @@ class Instance(object):
 
 		for bag_name in dict(self.init_config["instance_tiddlers"]):
 			bag = Bag(bag_name)
-			env = { "tiddlyweb.config": self.init_config }
-			store = Store(self.init_config["server_store"][0], environ=env)
-			store.put(bag)
+			self.store.put(bag)
 
 	def update_store(self):
 		"""
@@ -57,14 +56,10 @@ class Instance(object):
 		"""
 		os.chdir(self.root) # XXX: side-effects
 
-		config = self.init_config
-		env = { "tiddlyweb.config": config }
-		store = Store(config["server_store"][0], env)
-
 		for bag, uris in self.init_config["instance_tiddlers"]:
 			for tiddler in sourcer.from_list(uris):
 				tiddler.bag = bag
-				store.put(tiddler) # XXX: create bag first?
+				self.store.put(tiddler)
 
 
 def _generate_secret():

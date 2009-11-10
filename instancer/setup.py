@@ -16,5 +16,5 @@ setup(
         author = "FND",
         author_email = "FNDo@gmx.net",
         packages = find_packages(exclude=["test", "twp"]),
-        install_requires = ["setuptools", "tiddlyweb"]
+        install_requires = ["setuptools", "tiddlyweb", "tiddlywebplugins.utils"] # XXX: include optional tiddlywebwiki?
 )
