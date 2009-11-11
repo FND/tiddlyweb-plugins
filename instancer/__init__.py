@@ -11,4 +11,4 @@ import os
 VIRTUAL_NAMESPACE = "tiddlywebplugins"
 
 local_package = os.path.abspath(VIRTUAL_NAMESPACE)
-sys.modules[VIRTUAL_NAMESPACE].__dict__["__path__"].append(local_package)
+sys.modules[VIRTUAL_NAMESPACE].__dict__["__path__"].insert(0, local_package)
