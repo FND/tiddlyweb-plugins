@@ -4,7 +4,7 @@ utility package for TiddlyWeb instances
 
 import os
 
-import sourcer # XXX: use explicit tiddlywebplugins.instancer.sourcer (breaks tests due to "twp" namespace issue)
+import tiddlywebplugins.instancer.sourcer
 
 from time import time
 from random import random
@@ -14,41 +14,40 @@ from tiddlyweb.util import sha
 from tiddlywebplugins.utils import get_store
 
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 CONFIG_NAME = "tiddlywebconfig.py"
 
 
 class Instance(object):
 	"""
-	a prefconfigured TiddlyWeb instance directory
-
-	accepts an optional dictionary with configuration values for the instance's
-	default tiddlywebconfig.py
+	prefconfigured TiddlyWeb instance
 	"""
 
 	def __init__(self, directory, init_config, instance_config=None):
 		"""
 		creates instance in given directory
 
-		accepts an optional dictionary with configuration values for the instance's
-		default tiddlywebconfig.py
+		init_config is a TiddlyWeb configuration dictionary used when creating
+		the instance
+		instance_config is an optional dictionary with configuration values for
+		the default tiddlywebconfig.py (usually referencing init_config in
+		system_plugins and twanager_plugins)
 		"""
-		# TODO: rename config arguments/variables
 		self.root = os.path.abspath(directory)
 		self.init_config = init_config
 		self.instance_config = instance_config
-		self.store = get_store(self.init_config)
 
 	def spawn(self):
 		os.mkdir(self.root)
-
 		os.chdir(self.root) # XXX: side-effects
+
 		_write_config(self.instance_config)
 
+		store = get_store(self.init_config)
 		for bag_name in dict(self.init_config["instance_tiddlers"]):
 			bag = Bag(bag_name)
-			self.store.put(bag)
+			store.put(bag)
 
 	def update_store(self):
 		"""
@@ -56,10 +55,11 @@ class Instance(object):
 		"""
 		os.chdir(self.root) # XXX: side-effects
 
+		store = get_store(self.init_config)
 		for bag, uris in self.init_config["instance_tiddlers"]:
 			for tiddler in sourcer.from_list(uris):
 				tiddler.bag = bag
-				self.store.put(tiddler)
+				store.put(tiddler)
 
 
 def _generate_secret():
