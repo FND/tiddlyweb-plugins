@@ -1,5 +1,7 @@
 import os
 
+import __init__
+
 from setuptools import setup, find_packages
 
 from tiddlywebplugins.instancer import __version__
