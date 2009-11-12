@@ -10,11 +10,13 @@ from time import time
 from random import random
 
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.user import User
 from tiddlyweb.util import sha
 from tiddlywebplugins.utils import get_store
 
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 
 CONFIG_NAME = "tiddlywebconfig.py"
 
@@ -38,16 +40,17 @@ class Instance(object):
 		self.init_config = init_config
 		self.instance_config = instance_config
 
-	def spawn(self):
+	def spawn(self, store_structure=None):
+		"""
+		creates the instance, optionally pre-configuring the store structure
+		"""
 		os.mkdir(self.root)
 		os.chdir(self.root) # XXX: side-effects
 
 		_write_config(self.instance_config)
 
-		store = get_store(self.init_config)
-		for bag_name in dict(self.init_config["instance_tiddlers"]):
-			bag = Bag(bag_name)
-			store.put(bag)
+		if store_structure: # XXX: also prevents instance_tiddlers bag creation
+			self._init_store(store_structure)
 
 	def update_store(self):
 		"""
@@ -60,6 +63,50 @@ class Instance(object):
 			for tiddler in sourcer.from_list(uris):
 				tiddler.bag = bag
 				store.put(tiddler)
+
+	def _init_store(self, struct):
+		"""
+		creates basic store structure with bags, recipes and users
+
+		(no support for user passwords for security reasons)
+		"""
+		store = get_store(self.init_config)
+
+		for bag_name in dict(self.init_config["instance_tiddlers"]): # XXX: obsolete?
+			bag = Bag(bag_name)
+			store.put(bag)
+
+		for name, data in struct["bags"].items():
+			desc = data.get("desc")
+			bag = Bag(name, desc=desc)
+			constraints = data.get("policy", {})
+			_set_policy(bag, constraints)
+			store.put(bag)
+
+		for name, data in struct["recipes"].items(): # TODO: DRY
+			desc = data.get("desc")
+			recipe = Recipe(name, desc=desc)
+			recipe.set_recipe(data["recipe"])
+			constraints = data.get("policy", {})
+			_set_policy(recipe, constraints)
+			store.put(recipe)
+
+		for name, data in struct["users"].items():
+			note = data.get("note")
+			user = User(name, note=note)
+			for role in data.get("roles"):
+				user.add_role(role)
+			store.put(user)
+
+
+def _set_policy(entity, constraints):
+	"""
+	applies contstraints to entity
+
+	entity is a Bag or a Recipe, constraints a dictionary
+	"""
+	for constraint, value in constraints.items():
+		setattr(entity.policy, constraint, value)
 
 
 def _generate_secret():
