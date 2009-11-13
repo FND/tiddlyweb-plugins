@@ -1,7 +1,7 @@
 """
 adjusts module path to account for virtual namespace
 
-This is required for testing and building.
+This is required primarily for testing.
 """
 
 import sys

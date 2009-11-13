@@ -7,12 +7,13 @@ except ImportError:
 
 from setuptools import setup, find_packages
 
-from tiddlywebplugins.instancer import __version__
+
+VERSION = "0.2.2"
 
 
 setup(
 	name = "tiddlywebplugins.instancer",
-	version = __version__,
+	version = VERSION,
 	url = "http://pypi.python.org/pypi/tiddlywebplugins.instancer",
 	description = "TiddlyWeb plugin to simplify instance management for verticals",
 	long_description = file(os.path.join(os.path.dirname(__file__), "README")).read(),
