@@ -1,6 +1,9 @@
 import os
 
-import __init__
+try: # development environment
+	import mangler
+except ImportError:
+	pass
 
 from setuptools import setup, find_packages
 
