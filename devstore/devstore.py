@@ -74,7 +74,7 @@ class Store(StorageInterface):
 				self.bag_put(bag)
 
 	def recipe_get(self, recipe):
-		logging.debug("get recipe %s" % recipe)
+		logging.debug("get recipe %s" % recipe.name)
 		recipe_path = self._recipe_path(recipe)
 		try:
 			contents = read_utf8_file(recipe_path)
@@ -84,13 +84,13 @@ class Store(StorageInterface):
 		return self.serializer.from_string(contents)
 
 	def recipe_put(self, recipe):
-		logging.debug("put recipe %s" % recipe)
+		logging.debug("put recipe %s" % recipe.name)
 		recipe_path = self._recipe_path(recipe)
 		self.serializer.object = recipe
 		write_utf8_file(recipe_path, self.serializer.to_string())
 
 	def recipe_delete(self, recipe):
-		logging.debug("delete recipe %s" % recipe)
+		logging.debug("delete recipe %s" % recipe.name)
 		recipe_path = self._recipe_path(recipe)
 		try:
 			os.remove(recipe_path)
@@ -98,7 +98,7 @@ class Store(StorageInterface):
 			raise NoRecipeError(exc)
 
 	def bag_get(self, bag):
-		logging.debug("get bag %s" % bag)
+		logging.debug("get bag %s" % bag.name)
 
 		bag_path = self._bag_path(bag)
 		locals = [filename[:-4] for filename in os.listdir(bag_path)
@@ -119,7 +119,7 @@ class Store(StorageInterface):
 		return bag
 
 	def bag_put(self, bag):
-		logging.debug("put bag %s" % bag)
+		logging.debug("put bag %s" % bag.name)
 
 		bag_path = self._bag_path(bag)
 		if not os.path.exists(bag_path):
@@ -129,7 +129,7 @@ class Store(StorageInterface):
 		self._write_policy(bag.policy, bag_path)
 
 	def bag_delete(self, bag):
-		logging.debug("delete bag %s" % bag)
+		logging.debug("delete bag %s" % bag.name)
 		bag_path = self._bag_path(bag)
 		rmtree(bag_path)
 
@@ -180,7 +180,7 @@ class Store(StorageInterface):
 			raise NoUserError(exc)
 
 	def user_put(self, user):
-		logging.debug("put user %s" % user)
+		logging.debug("put user %s" % user.usersign)
 		user_path = self._user_path(user)
 		user_dict = {}
 		for key in ["usersign", "note", "_password", "roles"]:
@@ -195,7 +195,7 @@ class Store(StorageInterface):
 		write_utf8_file(user_path, user_info)
 
 	def user_delete(self, user):
-		logging.debug("delete user %s" % user)
+		logging.debug("delete user %s" % user.usersign)
 		user_path = self._user_path(user)
 		try:
 			os.remove(user_path)
