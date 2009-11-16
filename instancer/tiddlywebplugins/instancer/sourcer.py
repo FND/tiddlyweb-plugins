@@ -12,6 +12,7 @@ from urllib2 import urlopen, unquote, URLError, HTTPError
 
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
+from tiddlyweb.util import read_utf8_file
 
 
 def from_list(uris):
@@ -176,6 +177,9 @@ def _strip_extension(name, ext):
 
 
 def _get_uri(uri):
-	print "retrieving %s" % uri # XXX: DEBUG
-	content = urlopen(uri).read().replace("\r", "")
-	return unicode(content, "utf-8")
+	try:
+		content = urlopen(uri).read()
+		content = unicode(content, "utf-8")
+	except ValueError:
+		content = read_utf8_file(uri)
+	return content.replace("\r", "")

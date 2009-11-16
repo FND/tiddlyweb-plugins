@@ -167,29 +167,19 @@ def test_get_title_from_uri():
 
 def test_get_uri():
 	uri = "file:%s/dummy.txt" % os.path.abspath(FIXTURES_DIR)
-	content = _get_uri(uri)
-	assert content == "lorem ipsum\ndolor sit amet\n"
+	assert _get_uri(uri) == "lorem ipsum\ndolor sit amet\n"
 
 	uri = "file:/%s/dummy.txt" % os.path.abspath(FIXTURES_DIR)
 	raises(URLError, "_get_uri(uri)")
 
 	uri = "file://%s/dummy.txt" % os.path.abspath(FIXTURES_DIR)
-	content = _get_uri(uri)
-	assert content == "lorem ipsum\ndolor sit amet\n"
+	assert _get_uri(uri) == "lorem ipsum\ndolor sit amet\n"
 
 	uri = "file:%s/dummy.txt" % FIXTURES_DIR
-	content = _get_uri(uri)
-	assert content == "lorem ipsum\ndolor sit amet\n"
+	assert _get_uri(uri) == "lorem ipsum\ndolor sit amet\n"
 
 	uri = "file:%s/../dummy.txt" % REPO_DIR
-	content = _get_uri(uri)
-	assert content == "lorem ipsum\ndolor sit amet\n"
-
-	uri = "%s/dummy.txt" % FIXTURES_DIR
-	raises(ValueError, "_get_uri(uri)")
-
-	uri = "foo"
-	raises(ValueError, "_get_uri(uri)")
+	assert _get_uri(uri) == "lorem ipsum\ndolor sit amet\n"
 
 	uri = "file:foo"
 	raises(URLError, "_get_uri(uri)")
@@ -205,6 +195,12 @@ def test_get_uri():
 
 	uri = "http://localhost/foo"
 	raises(URLError, "_get_uri(uri)")
+
+	uri = "%s/dummy.txt" % FIXTURES_DIR
+	assert _get_uri(uri) == "lorem ipsum\ndolor sit amet\n"
+
+	uri = "foo"
+	raises(IOError, "_get_uri(uri)")
 
 	# disabled to avoid relying on connectivity
 	#uri = "http://example.org/foo"
