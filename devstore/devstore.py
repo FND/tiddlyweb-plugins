@@ -37,7 +37,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -181,7 +181,7 @@ class Store(StorageInterface):
 
 	def user_put(self, user):
 		logging.debug("put user %s" % user)
-		user_path = self._user_path(user.usersign)
+		user_path = self._user_path(user)
 		user_dict = {}
 		for key in ["usersign", "note", "_password", "roles"]:
 			value = user.__getattribute__(key)
@@ -196,7 +196,7 @@ class Store(StorageInterface):
 
 	def user_delete(self, user):
 		logging.debug("delete user %s" % user)
-		user_path = self._user_path(user.usersign)
+		user_path = self._user_path(user)
 		try:
 			os.remove(user_path)
 		except IOError, exc:
