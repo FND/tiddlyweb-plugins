@@ -74,14 +74,16 @@ class Instance(object):
 			bag = Bag(bag_name)
 			store.put(bag)
 
-		for name, data in struct["bags"].items():
+		bags = struct.get(["bags"], {})
+		for name, data in bags.items():
 			desc = data.get("desc")
 			bag = Bag(name, desc=desc)
 			constraints = data.get("policy", {})
 			_set_policy(bag, constraints)
 			store.put(bag)
 
-		for name, data in struct["recipes"].items(): # TODO: DRY
+		recipes = struct.get(["recipes"], {})
+		for name, data in recipes.items(): # TODO: DRY
 			desc = data.get("desc")
 			recipe = Recipe(name, desc=desc)
 			recipe.set_recipe(data["recipe"])
@@ -89,7 +91,8 @@ class Instance(object):
 			_set_policy(recipe, constraints)
 			store.put(recipe)
 
-		for name, data in struct["users"].items():
+		users = struct.get(["users"], {})
+		for name, data in users.items():
 			note = data.get("note")
 			user = User(name, note=note)
 			for role in data.get("roles"):
