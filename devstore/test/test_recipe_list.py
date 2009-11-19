@@ -6,7 +6,7 @@ import os
 
 from tiddlyweb.store import Store
 
-from devstore import Store as Storage
+from tiddlywebplugins.devstore import Store as Storage
 
 from test.test_devstore import STORE_DIR, REPO_DIR, _cleanup
 
@@ -15,7 +15,7 @@ def test_list_recipes():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": []
 	}
 	env = { "tiddlyweb.config": config }
@@ -27,14 +27,14 @@ def test_list_recipes():
 
 	actual = [recipe.name for recipe in store.list_recipes()]
 	expected = ["bravo", "alpha", "charlie"]
-	assert actual == expected
+	assert set(actual) == set(expected)
 
 
 def test_list_recipes_in_store():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": []
 	}
 	env = { "tiddlyweb.config": config }
@@ -46,4 +46,4 @@ def test_list_recipes_in_store():
 
 	actual = [recipe.name for recipe in store.list_recipes()]
 	expected = ["bravo", "alpha", "charlie"]
-	assert actual == expected
+	assert set(actual) == set(expected)

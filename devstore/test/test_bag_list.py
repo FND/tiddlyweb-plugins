@@ -4,7 +4,7 @@ test module for listing BagS
 
 from tiddlyweb.store import Store
 
-from devstore import Store as Storage
+from tiddlywebplugins.devstore import Store as Storage
 
 from test.test_devstore import STORE_DIR, REPO_DIR, _cleanup
 
@@ -13,7 +13,7 @@ def test_list_bags():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": [
 			("alpha", ["%s/alpha/index.recipe" % REPO_DIR]),
 			("bravo", ["%s/bravo/index.recipe" % REPO_DIR])
@@ -31,7 +31,7 @@ def test_list_bags_in_store():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": [
 			("alpha", ["%s/alpha/index.recipe" % REPO_DIR]),
 			("bravo", ["%s/bravo/index.recipe" % REPO_DIR])

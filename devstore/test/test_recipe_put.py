@@ -7,7 +7,7 @@ import os
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.store import Store
 
-from devstore import Store as Storage
+from tiddlywebplugins.devstore import Store as Storage
 
 from test.test_devstore import STORE_DIR, _cleanup
 
@@ -16,7 +16,7 @@ def test_recipe_put():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": []
 	}
 	env = { "tiddlyweb.config": config }
@@ -33,7 +33,7 @@ def test_recipe_put_to_store():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": []
 	}
 	env = { "tiddlyweb.config": config }
@@ -50,7 +50,7 @@ def test_serialization():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": []
 	}
 	env = { "tiddlyweb.config": config }

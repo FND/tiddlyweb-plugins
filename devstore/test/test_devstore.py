@@ -10,8 +10,8 @@ from py.test import raises
 
 from tiddlyweb.store import Store
 
-from devstore import Store as Storage
-from devstore import ConfigurationError
+from tiddlywebplugins.devstore import Store as Storage
+from tiddlywebplugins.devstore import ConfigurationError
 
 
 STORE_DIR = "store"
@@ -22,7 +22,7 @@ def test_root_config():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", {}],
+		"server_store": ["tiddlywebplugins.devstore", {}],
 		"instance_tiddlers": []
 	}
 	env = { "tiddlyweb.config": config }
@@ -34,7 +34,7 @@ def test_instance_tiddlers_config():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }]
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }]
 	}
 	env = { "tiddlyweb.config": config }
 	raises(ConfigurationError, "Storage(environ=env)")
@@ -45,7 +45,7 @@ def test_instance_tiddlers_index():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": [
 			("alpha", [
 				"%s/alpha/index.recipe" % REPO_DIR,
@@ -81,7 +81,7 @@ def test_root_dir():
 	except OSError:
 		pass
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": []
 	}
 	env = { "tiddlyweb.config": config }
@@ -94,7 +94,7 @@ def test_bag_dirs():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": [
 			("foo", []),
 			("bar", [])

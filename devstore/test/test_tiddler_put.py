@@ -7,7 +7,7 @@ import os
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import Store
 
-from devstore import Store as Storage
+from tiddlywebplugins.devstore import Store as Storage
 
 from test.test_devstore import STORE_DIR, REPO_DIR, _cleanup
 
@@ -16,7 +16,7 @@ def test_tiddler_put():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": [
 			("myBag", [])
 		]
@@ -36,7 +36,7 @@ def test_put_tiddler_to_store():
 	_cleanup()
 
 	config = {
-		"server_store": ["devstore", { "store_root": STORE_DIR }],
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
 		"instance_tiddlers": [
 			("myBag", ["%s/alpha/index.recipe" % REPO_DIR])
 		]
