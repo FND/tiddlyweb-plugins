@@ -33,6 +33,9 @@ class Instance(object):
 		instance_config is an optional dictionary with configuration values for
 		the default tiddlywebconfig.py (usually referencing init_config in
 		system_plugins and twanager_plugins)
+
+		Note that init_config may contain an entry "instance_config_head" whose
+		value is prepended to the generated tiddlywebconfig.py.
 		"""
 		self.root = os.path.abspath(directory)
 		self.init_config = init_config
@@ -45,7 +48,7 @@ class Instance(object):
 		os.mkdir(self.root)
 		os.chdir(self.root) # XXX: side-effects
 
-		_write_config(self.instance_config)
+		self._write_config()
 
 		if store_structure: # XXX: also prevents instance_tiddlers bag creation
 			self._init_store(store_structure)
@@ -99,6 +102,27 @@ class Instance(object):
 				user.add_role(role)
 			store.put(user)
 
+	def _write_config(self, defaults=None):
+		"""
+		creates a default tiddlywebconfig.py in the working directory
+
+		uses values from instance_config plus optional instance_config_head
+		from init_config
+		"""
+		intro = "%s\n%s\n%s" % ("# A basic configuration.",
+			'# Run "pydoc tiddlyweb.config" for details on configuration items.',
+			self.init_config.get("instance_config_head", ""))
+
+		config = {
+			"secret": _generate_secret()
+		}
+		config.update(self.instance_config or {})
+
+		config_string = "config = %s\n" % _pretty_print(config)
+		f = open(CONFIG_NAME, "w")
+		f.write("%s\n%s" % (intro, config_string))
+		f.close()
+
 
 def _set_policy(entity, constraints):
 	"""
@@ -120,26 +144,6 @@ def _generate_secret():
 	digest.update(str(random()))
 	digest.update("lorem foo ipsum")
 	return digest.hexdigest()
-
-
-def _write_config(defaults=None):
-	"""
-	create a default tiddlywebconfig.py in the working directory
-
-	accepts an optional dictionary with configuration values
-	"""
-	intro = "%s\n%s" % ("# A basic configuration.",
-		'# Run "pydoc tiddlyweb.config" for details on configuration items.')
-
-	config = {
-		"secret": _generate_secret()
-	}
-	config.update(defaults or {})
-
-	config_string = "config = %s\n" % _pretty_print(config)
-	f = open(CONFIG_NAME, "w")
-	f.write("%s\n%s" % (intro, config_string))
-	f.close()
 
 
 def _pretty_print(dic): # TODO: use pprint?
