@@ -2,8 +2,11 @@ import os
 
 from setuptools import setup, find_packages
 
-
-VERSION = "0.3.2"
+try: # development environment
+	import mangler
+	from tiddlywebplugins.instancer import __version__ as VERSION
+except ImportError:
+	VERSION = None
 
 
 setup(
