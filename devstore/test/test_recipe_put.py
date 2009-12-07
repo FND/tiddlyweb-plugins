@@ -17,7 +17,7 @@ def test_recipe_put():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": []
+		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
 	store = Storage(env)
@@ -34,7 +34,7 @@ def test_recipe_put_to_store():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": []
+		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], env)
@@ -51,7 +51,7 @@ def test_serialization():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": []
+		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], env)

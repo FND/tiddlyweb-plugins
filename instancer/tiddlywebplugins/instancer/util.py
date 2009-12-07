@@ -11,7 +11,7 @@ def get_tiddler_locations(store_contents, package):
 	packaged tiddlers must be listed in <package>/resources/tiddlers.index
 	"""
 	tiddler_index = os.path.join(package, "resources", "tiddlers.index")
-	instance_tiddlers = []
+	instance_tiddlers = {}
 	try:
 		filepaths = []
 		f = open(tiddler_index)
@@ -22,9 +22,9 @@ def get_tiddler_locations(store_contents, package):
 			filepaths.append(uri)
 			if filename.endswith(".js"): # unpack meta files into egg cache
 				resource_filename(package, "%s.meta" % filepath)
-			instance_tiddlers.append((bag, filepaths))
+			instance_tiddlers[bag] = filepaths
 		f.close()
 	except IOError:
 		for bag, uris in store_contents.items():
-			instance_tiddlers.append((bag, uris))
+			instance_tiddlers[bag] = uris
 	return instance_tiddlers

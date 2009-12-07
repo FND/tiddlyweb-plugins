@@ -37,7 +37,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -60,7 +60,7 @@ class Store(StorageInterface):
 
 		self._root = store_config["store_root"]
 		try:
-			self._index = dict(config["instance_tiddlers"])
+			self._index = config["instance_tiddlers"]
 		except KeyError:
 			raise ConfigurationError("instance_tiddlers not defined")
 		self.serializer = Serializer("text")

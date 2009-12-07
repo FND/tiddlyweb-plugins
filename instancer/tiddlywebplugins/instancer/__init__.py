@@ -16,7 +16,7 @@ from tiddlyweb.util import sha
 from tiddlywebplugins.utils import get_store
 
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 CONFIG_NAME = "tiddlywebconfig.py"
 
@@ -62,7 +62,7 @@ class Instance(object):
 		os.chdir(self.root) # XXX: side-effects
 
 		store = get_store(self.init_config)
-		for bag, uris in self.init_config["instance_tiddlers"]:
+		for bag, uris in self.init_config["instance_tiddlers"].items():
 			for tiddler in sourcer.from_list(uris):
 				tiddler.bag = bag
 				store.put(tiddler)
@@ -75,7 +75,7 @@ class Instance(object):
 		"""
 		store = get_store(self.init_config)
 
-		for bag_name in dict(self.init_config["instance_tiddlers"]): # XXX: obsolete?
+		for bag_name in self.init_config["instance_tiddlers"]: # XXX: obsolete?
 			bag = Bag(bag_name)
 			store.put(bag)
 

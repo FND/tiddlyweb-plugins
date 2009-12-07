@@ -15,9 +15,9 @@ def test_bag_get():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": [
-			("myBag", ["%s/bravo/index.recipe" % REPO_DIR])
-		]
+		"instance_tiddlers": {
+			"myBag": ["%s/bravo/index.recipe" % REPO_DIR]
+		}
 	}
 	env = { "tiddlyweb.config": config }
 	store = Storage(env)
@@ -37,9 +37,9 @@ def test_get_bag_from_store():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": [
-			("myBag", ["%s/alpha/index.recipe" % REPO_DIR])
-		]
+		"instance_tiddlers": {
+			"myBag": ["%s/alpha/index.recipe" % REPO_DIR]
+		}
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], env)
