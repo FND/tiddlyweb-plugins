@@ -61,7 +61,7 @@ def from_plugin(uri):
 	meta_uri = "%s.meta" % uri
 	try:
 		meta_content = _get_uri(meta_uri)
-	except (HTTPError, URLError):
+	except (HTTPError, URLError, IOError, OSError):
 		meta_content = "title: %s\ntags: %s\n" % (default_title, default_tags)
 
 	try:
