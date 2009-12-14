@@ -13,10 +13,11 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 from tiddlyweb.util import sha
+
 from tiddlywebplugins.utils import get_store
 
 
-__version__ = "0.4.1"
+__version__ = "0.5.0"
 
 CONFIG_NAME = "tiddlywebconfig.py"
 

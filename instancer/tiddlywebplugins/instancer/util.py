@@ -1,6 +1,12 @@
+import sys
 import os
 
+from urllib2 import urlopen, URLError
 from pkg_resources import resource_filename
+
+from tiddlyweb.util import write_utf8_file, std_error_message
+
+from tiddlywebplugins.instancer.sourcer import _expand_recipe
 
 
 def get_tiddler_locations(store_contents, package_name):
@@ -31,3 +37,78 @@ def get_tiddler_locations(store_contents, package_name):
 		for bag, uris in store_contents.items():
 			instance_tiddlers[bag] = uris
 	return instance_tiddlers
+
+
+def cache_tiddlers(package_name):
+	"""
+	creates local cache of instance tiddlers to be included in distribution
+
+	reads store_contents from <package>.instance
+
+	tiddler files are stored in <package>/resources/<bag>
+	a complete index is stored in <package>/resources
+	"""
+	# extend module search path for access to local mangler.py
+	sys.path.insert(0, os.getcwd())
+	import mangler
+
+	instance_module = __import__("%s.instance" % package_name,
+		fromlist=["instance"])
+	store_contents = instance_module.store_contents
+	package_path = os.path.join(*package_name.split("."))
+
+	sources = {}
+	for bag, uris in store_contents.items():
+		sources[bag] = []
+		for uri in uris:
+			if uri.endswith(".recipe"):
+				urls = _expand_recipe(uri)
+				sources[bag].extend(urls)
+			else:
+				sources[bag].append(uri)
+		metas = []
+		for uri in sources[bag]:
+			if uri.endswith(".js"):
+				metas.append("%s.meta" % uri)
+		sources[bag].extend(metas)
+
+	resources_path = os.path.join(package_path, "resources")
+	try:
+		os.mkdir(resources_path)
+	except OSError: # directory exists
+		pass
+
+	for bag, uris in sources.items():
+		bag_path = os.path.join(resources_path, bag)
+		try:
+			os.mkdir(bag_path)
+		except OSError: # directory exists
+			pass
+
+		for uri in uris:
+			filepath = os.path.join(bag_path, os.path.basename(uri))
+			std_error_message("retrieving %s" % uri)
+			try:
+				content = urlopen(uri).read()
+				content = unicode(content, "utf-8")
+				write_utf8_file(filepath, content)
+			except URLError:
+				if uri.endswith(".meta"):
+					std_error_message("no meta file found for %s" % uri[:-5])
+				else:
+					raise
+
+	tiddler_index = "tiddlers.index"
+	tiddler_paths = []
+	for base_dir, dirs, files in os.walk(resources_path):
+		bag = os.path.basename(base_dir)
+		filepaths = (os.path.join(bag, filename) for filename in files
+			if not filename.endswith(".meta") and not filename == tiddler_index)
+		tiddler_paths.extend(filepaths)
+	filepath = "/".join([resources_path, tiddler_index])
+	std_error_message("creating %s" % filepath)
+	write_utf8_file(filepath, "\n".join(tiddler_paths))
+
+	filepath = "MANIFEST.in"
+	std_error_message("creating %s" % filepath)
+	write_utf8_file(filepath, "recursive-include %s/resources *\n" % package_path)
