@@ -69,7 +69,7 @@ def cache_tiddlers(package_name):
 	import mangler
 
 	instance_module = __import__("%s.instance" % package_name,
-		fromlist=["instance"])
+		fromlist=["instance"]) # XXX: unnecessarily convoluted and constraining!?
 	store_contents = instance_module.store_contents
 	package_path = os.path.join(*package_name.split("."))
 
@@ -118,9 +118,10 @@ def cache_tiddlers(package_name):
 	tiddler_paths = []
 	for base_dir, dirs, files in os.walk(resources_path):
 		bag = os.path.basename(base_dir)
-		filepaths = (os.path.join(bag, filename) for filename in files
-			if not filename.endswith(".meta") and not filename == tiddler_index)
-		tiddler_paths.extend(filepaths)
+		if bag in store_contents:
+			filepaths = (os.path.join(bag, filename) for filename in files
+				if not filename.endswith(".meta") and not filename == tiddler_index)
+			tiddler_paths.extend(filepaths)
 	filepath = "/".join([resources_path, tiddler_index])
 	std_error_message("creating %s" % filepath)
 	write_utf8_file(filepath, "\n".join(tiddler_paths))
