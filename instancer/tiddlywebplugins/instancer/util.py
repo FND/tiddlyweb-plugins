@@ -125,7 +125,3 @@ def cache_tiddlers(package_name):
 	filepath = "/".join([resources_path, tiddler_index])
 	std_error_message("creating %s" % filepath)
 	write_utf8_file(filepath, "\n".join(tiddler_paths))
-
-	filepath = "MANIFEST.in"
-	std_error_message("creating %s" % filepath)
-	write_utf8_file(filepath, "recursive-include %s/resources *\n" % package_path)
