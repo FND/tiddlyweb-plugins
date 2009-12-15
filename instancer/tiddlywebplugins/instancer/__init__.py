@@ -27,7 +27,7 @@ class Instance(object):
 	prefconfigured TiddlyWeb instance
 	"""
 
-	def __init__(self, directory, init_config, instance_config=None):
+	def __init__(self, directory, init_config, instance_config=None): # TODO: "create" argument to spawn and update?
 		"""
 		creates instance in given directory
 

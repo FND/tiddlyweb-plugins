@@ -6,7 +6,23 @@ from pkg_resources import resource_filename
 
 from tiddlyweb.util import write_utf8_file, std_error_message
 
+from tiddlywebplugins.instancer import Instance
 from tiddlywebplugins.instancer.sourcer import _expand_recipe
+
+
+def spawn(instance_path, init_config, instance_module):
+	"""
+	convenience wrapper for instance-creation scripts
+	"""
+	# extend module search path for access to local tiddlywebconfig.py
+	sys.path.insert(0, os.getcwd())
+	from tiddlyweb.config import config, merge_config
+	merge_config(config, init_config)
+
+	package_name = instance_module.__name__.rsplit(".", 1)[0]
+	instance = Instance(instance_path, config, instance_module.instance_config)
+	instance.spawn(instance_module.store_structure)
+	instance.update_store()
 
 
 def get_tiddler_locations(store_contents, package_name):
