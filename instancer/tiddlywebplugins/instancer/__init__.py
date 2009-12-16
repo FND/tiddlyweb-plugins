@@ -27,7 +27,7 @@ class Instance(object):
 	prefconfigured TiddlyWeb instance
 	"""
 
-	def __init__(self, directory, init_config, instance_config=None): # TODO: "create" argument to spawn and update?
+	def __init__(self, directory, init_config, instance_config=None):
 		"""
 		creates instance in given directory
 
@@ -149,7 +149,7 @@ def _generate_secret():
 	return digest.hexdigest()
 
 
-def _pretty_print(dic): # TODO: use pprint?
+def _pretty_print(dic): # TODO: use pprint? -- XXX: list items use single quotes, thus creating inconsistencies
 	"""
 	generate an indented string representation of a dictionary
 	"""
