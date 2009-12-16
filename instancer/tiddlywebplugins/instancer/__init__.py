@@ -17,7 +17,7 @@ from tiddlyweb.util import sha
 from tiddlywebplugins.utils import get_store
 
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 CONFIG_NAME = "tiddlywebconfig.py"
 
