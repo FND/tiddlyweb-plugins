@@ -2,11 +2,8 @@ import os
 
 from setuptools import setup, find_packages
 
-try: # development environment
-	import mangler
-	from tiddlywebplugins.instancer import __version__ as VERSION
-except ImportError:
-	VERSION = None
+
+VERSION = "0.5.2" # N.B.: duplicate of tiddlywebplugins.instancer.__init__
 
 
 setup(
@@ -20,5 +17,5 @@ setup(
 	author_email = "FNDo@gmx.net",
 	namespace_packages = ["tiddlywebplugins"],
 	packages = find_packages(exclude=["test"]),
-	install_requires = ["setuptools", "tiddlyweb", "tiddlywebplugins.utils"] # XXX: include optional tiddlywebwiki?
+	install_requires = ["setuptools", "tiddlyweb", "tiddlywebplugins.utils"]
 )
