@@ -39,16 +39,17 @@ def get_tiddler_locations(store_contents, package_name):
 	tiddler_index = resource_filename(package_name, tiddler_index)
 	instance_tiddlers = {}
 	try:
-		filepaths = []
 		f = open(tiddler_index)
 		for line in f:
 			bag, filename = line.rstrip().split("/", 1)
 			filepath = os.path.join("resources", bag, filename)
 			uri = "file:%s" % resource_filename(package_name, filepath)
-			filepaths.append(uri)
 			if filename.endswith(".js"): # unpack meta files into egg cache
 				resource_filename(package_name, "%s.meta" % filepath)
-			instance_tiddlers[bag] = filepaths
+			try:
+				instance_tiddlers[bag].append(uri)
+			except KeyError:
+				instance_tiddlers[bag] = [uri]
 		f.close()
 	except IOError:
 		for bag, uris in store_contents.items():
