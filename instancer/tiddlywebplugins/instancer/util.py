@@ -35,7 +35,8 @@ def get_tiddler_locations(store_contents, package_name):
 	packaged tiddlers must be listed in <package>/resources/tiddlers.index
 	"""
 	package_path = os.path.join(*package_name.split("."))
-	tiddler_index = os.path.join(package_path, "resources", "tiddlers.index")
+	tiddler_index = os.path.join("resources", "tiddlers.index")
+	tiddler_index = resource_filename(package_name, tiddler_index)
 	instance_tiddlers = {}
 	try:
 		filepaths = []
