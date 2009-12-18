@@ -17,5 +17,5 @@ setup(
 	author_email = "FNDo@gmx.net",
 	namespace_packages = ["tiddlywebplugins"],
 	packages = find_packages(exclude=["test"]),
-	install_requires = ["setuptools", "tiddlyweb", "tiddlywebplugins.utils"]
+	install_requires = ["setuptools", "tiddlyweb>=0.9.83", "tiddlywebplugins.utils"]
 )
