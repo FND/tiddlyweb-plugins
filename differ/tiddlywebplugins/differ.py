@@ -21,6 +21,7 @@ reference (rev1 or rev2 URL parameter)
 TODO:
 * unicode handling
 * tests
+* avoid docstring duplication in README
 """
 
 import cgi
@@ -37,9 +38,9 @@ __version__ = "0.4.1"
 
 
 def init(config):
-	try:
+	try: # system plugin
 		config["selector"].add("/diff", GET=get_request, POST=post_request)
-	except KeyError: # not called as system_plugin
+	except KeyError: # twanager plugin
 		pass
 
 

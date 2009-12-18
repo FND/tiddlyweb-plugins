@@ -1,4 +1,4 @@
-import differ
+import tiddlywebplugins.differ as differ
 
 
 def test_diff():
