@@ -16,7 +16,8 @@ def spawn(instance_path, init_config, instance_module):
 	"""
 	# extend module search path for access to local tiddlywebconfig.py
 	sys.path.insert(0, os.getcwd())
-	from tiddlyweb.config import config, merge_config
+	from tiddlyweb.util import merge_config
+	from tiddlyweb.config import config
 	merge_config(config, init_config)
 
 	package_name = instance_module.__name__.rsplit(".", 1)[0]
