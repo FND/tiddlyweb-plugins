@@ -33,11 +33,14 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 
 def init(config):
-	config["selector"].add("/diff", GET=get_request, POST=post_request)
+	try:
+		config["selector"].add("/diff", GET=get_request, POST=post_request)
+	except KeyError: # not called as system_plugin
+		pass
 
 
 def get_request(environ, start_response):
