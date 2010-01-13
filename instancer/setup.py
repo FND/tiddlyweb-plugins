@@ -3,14 +3,14 @@ import os
 from setuptools import setup, find_packages
 
 
-VERSION = "0.5.5" # N.B.: duplicate of tiddlywebplugins.instancer.__init__
+VERSION = "0.6.0" # N.B.: duplicate of tiddlywebplugins.instancer.__init__
 
 
 setup(
 	name = "tiddlywebplugins.instancer",
 	version = VERSION,
 	url = "http://pypi.python.org/pypi/tiddlywebplugins.instancer",
-	description = "TiddlyWeb plugin to simplify instance management for verticals",
+	description = "utilities to simplify instance management for TiddlyWeb verticals",
 	long_description = file(os.path.join(os.path.dirname(__file__), "README")).read(),
 	platforms = "Posix; MacOS X; Windows",
 	author = "FND",
