@@ -1,5 +1,0 @@
-recipe: ../alpha/index.recipe
-tiddler: tiddlers/common.tid
-tiddler: tiddlers/Bar.tid
-tiddler: tiddlers/ipsum.tiddler
-plugin: plugins/bar.js
