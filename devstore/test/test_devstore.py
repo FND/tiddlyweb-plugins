@@ -26,7 +26,7 @@ def test_root_config():
 		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
-	raises(KeyError, 'Store(config["server_store"][0], environ=env)')
+	raises(KeyError, 'Store(config["server_store"][0], config["server_store"][1], environ=env)')
 	raises(OSError, "os.rmdir(STORE_DIR)") # errors out before creating directory
 
 
@@ -37,7 +37,7 @@ def test_instance_tiddlers_config():
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }]
 	}
 	env = { "tiddlyweb.config": config }
-	raises(ConfigurationError, "Storage(environ=env)")
+	raises(ConfigurationError, 'Storage(config["server_store"][1], environ=env)')
 	raises(OSError, "os.rmdir(STORE_DIR)") # errors out before creating directory
 
 
@@ -58,7 +58,7 @@ def test_instance_tiddlers_index():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Storage(env)
+	store = Storage(config["server_store"][1], env)
 
 	expected = {
 		"alpha": [
@@ -85,7 +85,7 @@ def test_root_dir():
 		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Store(config["server_store"][0], environ=env)
+	store = Store(config["server_store"][0], config["server_store"][1], environ=env)
 
 	assert os.path.exists(STORE_DIR)
 
@@ -101,7 +101,7 @@ def test_bag_dirs():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Store(config["server_store"][0], environ=env)
+	store = Store(config["server_store"][0], config["server_store"][1], environ=env)
 
 	bag_path = os.path.join(STORE_DIR, "foo")
 	assert os.path.exists(bag_path)

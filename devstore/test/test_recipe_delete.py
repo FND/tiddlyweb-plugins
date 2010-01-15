@@ -23,7 +23,7 @@ def test_recipe_delete_from_store():
 		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Store(config["server_store"][0], env)
+	store = Store(config["server_store"][0], config["server_store"][1], env)
 
 	name = "foo"
 	recipe = Recipe(name)

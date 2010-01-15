@@ -20,7 +20,7 @@ def test_list_bags():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Storage(env)
+	store = Storage(config["server_store"][1], env)
 
 	actual = [bag.name for bag in store.list_bags()]
 	expected = ["bravo", "alpha"]
@@ -38,7 +38,7 @@ def test_list_bags_in_store():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Store(config["server_store"][0], env)
+	store = Store(config["server_store"][0], config["server_store"][1], env)
 
 	actual = [bag.name for bag in store.list_bags()]
 	expected = ["bravo", "alpha"]

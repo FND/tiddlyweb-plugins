@@ -37,7 +37,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -51,12 +51,11 @@ class ConfigurationError(Exception):
 
 class Store(StorageInterface):
 
-	def __init__(self, environ=None):
+	def __init__(self, store_config=None, environ=None):
 		logging.debug("initializing Dev Store")
-		super(Store, self).__init__(environ)
+		super(Store, self).__init__(store_config, environ)
 
 		config = self.environ["tiddlyweb.config"]
-		store_config = self.environ["tiddlyweb.config"]["server_store"][1]
 
 		self._root = store_config["store_root"]
 		try:

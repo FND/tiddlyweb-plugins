@@ -19,7 +19,7 @@ def test_list_recipes():
 		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Storage(env)
+	store = Storage(config["server_store"][1], env)
 
 	for name in ["alpha", "bravo", "charlie"]:
 		filepath = "%s.recipe" % os.path.join(STORE_DIR, name)
@@ -38,7 +38,7 @@ def test_list_recipes_in_store():
 		"instance_tiddlers": {}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Store(config["server_store"][0], env)
+	store = Store(config["server_store"][0], config["server_store"][1], env)
 
 	for name in ["alpha", "bravo", "charlie"]:
 		filepath = "%s.recipe" % os.path.join(STORE_DIR, name)

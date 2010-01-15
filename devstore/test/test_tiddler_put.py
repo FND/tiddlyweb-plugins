@@ -22,7 +22,7 @@ def test_tiddler_put():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Storage(env)
+	store = Storage(config["server_store"][1], env)
 
 	tiddler = Tiddler("lorem")
 	tiddler.bag = "myBag"
@@ -42,7 +42,7 @@ def test_put_tiddler_to_store():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Store(config["server_store"][0], env)
+	store = Store(config["server_store"][0], config["server_store"][1], env)
 
 	tiddler = Tiddler("lorem")
 	tiddler.bag = "myBag"

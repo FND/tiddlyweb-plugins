@@ -20,7 +20,7 @@ def test_bag_get():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Storage(env)
+	store = Storage(config["server_store"][1], env)
 
 	bag = Bag("myBag")
 	bag = store.bag_get(bag)
@@ -42,7 +42,7 @@ def test_get_bag_from_store():
 		}
 	}
 	env = { "tiddlyweb.config": config }
-	store = Store(config["server_store"][0], env)
+	store = Store(config["server_store"][0], config["server_store"][1], env)
 
 	bag = Bag("myBag")
 	bag = store.get(bag)
