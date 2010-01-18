@@ -7,7 +7,8 @@ primarily intended for TiddlyWiki plugin development
 Features:
 * supports Cook-style .recipe files
 * supports JavaScript (.js) files
-* uses config["instance_tiddlers"] files for referencing bag contents
+* uses config["local_instance_tiddlers"] or config["instance_tiddlers"] files
+  for referencing bag contents
 * uses .tid files for non-JavaScript content
 * no revisions
 
@@ -37,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -59,9 +60,12 @@ class Store(StorageInterface):
 
 		self._root = store_config["store_root"]
 		try:
-			self._index = config["instance_tiddlers"]
+			self._index = config["local_instance_tiddlers"]
 		except KeyError:
-			raise ConfigurationError("instance_tiddlers not defined")
+			try:
+				self._index = config["instance_tiddlers"]
+			except KeyError:
+				raise ConfigurationError("instance_tiddlers not defined")
 		self.serializer = Serializer("text")
 
 		if not os.path.exists(self._root):
