@@ -7,12 +7,13 @@ except ImportError:
 
 from setuptools import setup, find_packages
 
-from tiddlywebplugins.devstore import __version__
+
+VERSION = "0.3.1" # N.B.: duplicate of tiddlywebplugins.devstore
 
 
 setup(
 	name = "tiddlywebplugins.devstore",
-	version = __version__,
+	version = VERSION,
 	url = "http://pypi.python.org/pypi/tiddlywebplugins.devstore",
 	description = "TiddlyWeb store implementation supporting client-side development",
 	long_description = file(os.path.join(os.path.dirname(__file__), "README")).read(),
