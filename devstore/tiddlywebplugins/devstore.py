@@ -38,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -104,17 +104,20 @@ class Store(StorageInterface):
 		logging.debug("get bag %s" % bag.name)
 
 		bag_path = self._bag_path(bag)
-		locals = [filename[:-4] for filename in os.listdir(bag_path)
-			if filename.endswith(TIDDLER_EXT)]
-		try:
-			uris = self._index[bag.name]
-			remotes = [_extract_title(uri) for uri in _resolve_references(uris)]
-			titles = set(locals).union(remotes)
-		except KeyError: # non-remote bag
-			titles = locals
-		for title in titles: # TODO: ensure unique titles?
-			tiddler = Tiddler(title, bag.name)
-			bag.add_tiddler(tiddler)
+
+		if not getattr(bag, "skinny", False):
+			locals = [filename[:-4] for filename in os.listdir(bag_path)
+				if filename.endswith(TIDDLER_EXT)]
+			try:
+				uris = self._index[bag.name]
+				remotes = [_extract_title(uri) for uri in
+					_resolve_references(uris)]
+				titles = set(locals).union(remotes)
+			except KeyError: # non-remote bag
+				titles = locals
+			for title in titles: # TODO: ensure unique titles?
+				tiddler = Tiddler(title, bag.name)
+				bag.add_tiddler(tiddler)
 
 		bag.desc = self._read_description(bag_path)
 		bag.policy = self._read_policy(bag_path)
