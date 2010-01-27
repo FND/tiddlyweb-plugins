@@ -31,8 +31,10 @@ def main(args):
         except KeyError:
             instance_tiddlers[bag] = [uri]
 
+    server_store = ['tiddlywebplugins.devstore', { 'store_root': 'store' }]
+    init_config['server_store'] = server_store
     custom_config = {
-        'server_store': ['tiddlywebplugins.devstore', { 'store_root': 'store' }],
+        'server_store': server_store,
         'local_instance_tiddlers': instance_tiddlers,
         'log_level': 'DEBUG'
     }
