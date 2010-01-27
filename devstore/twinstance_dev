@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+
+"""
+TiddlyWebWiki dev instantiation
+"""
+
+import sys
+
+import tiddlywebplugins.devstore as devstore
+
+from tiddlywebplugins.instancer.util import spawn
+
+from tiddlywebwiki import instance as instance_module
+from tiddlywebwiki.config import config as init_config
+
+
+def main(args):
+    args = [unicode(arg, 'UTF-8') for arg in args]
+    instance_path = args[1]
+
+    instance_tiddlers = init_config["instance_tiddlers"]
+    for pair in args[2:]:
+        bag, uri = pair.split(':', 1)
+
+        # XXX: _pretty_print doesn't handle Unicode strings properly
+        bag = bag.encode('utf-8')
+        uri = uri.encode('utf-8')
+
+        try:
+            instance_tiddlers[bag].append(uri)
+        except KeyError:
+            instance_tiddlers[bag] = [uri]
+
+    custom_config = {
+        'server_store': ['tiddlywebplugins.devstore', { 'store_root': 'store' }],
+        'local_instance_tiddlers': instance_tiddlers,
+        'log_level': 'DEBUG'
+    }
+    instance_module.instance_config.update(custom_config)
+
+    # prevent local tiddlers from being created in the devstore
+    devstore.Store.tiddler_put = lambda self, tiddler: None
+
+    spawn(instance_path, init_config, instance_module)
+    return True
+
+
+if __name__ == '__main__':
+    status = not main(sys.argv)
+    sys.exit(status)

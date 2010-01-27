@@ -8,7 +8,7 @@ except ImportError:
 from setuptools import setup, find_packages
 
 
-VERSION = "0.3.1" # N.B.: duplicate of tiddlywebplugins.devstore
+VERSION = "0.4.0" # N.B.: duplicate of tiddlywebplugins.devstore
 
 
 setup(
@@ -20,6 +20,7 @@ setup(
 	platforms = "Posix; MacOS X; Windows",
 	author = "FND",
 	author_email = "FNDo@gmx.net",
+	scripts = ['twinstance_dev'],
 	namespace_packages = ["tiddlywebplugins"],
 	packages = find_packages(exclude=["test"]),
 	install_requires = ["setuptools", "tiddlywebwiki"]
