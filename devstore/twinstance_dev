@@ -22,7 +22,7 @@ def main(args):
     instance_tiddlers = init_config["instance_tiddlers"]
     for pair in args[2:]:
         bag, filepath = pair.split(':', 1)
-        filepath = os.path.abspath(uri)
+        filepath = os.path.abspath(filepath)
 
         # XXX: _pretty_print doesn't handle Unicode strings properly
         bag = bag.encode('utf-8')
