@@ -38,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -366,6 +366,6 @@ def _extract_title(uri):
 
 
 def _read_file(uri):
-	if uri.startswith("file:/"): # XXX: hack; use twimport's _get_url_handle!?
-		uri = uri[5:]
+	if uri.startswith("file://"): # XXX: hack; use twimport's _get_url_handle!?
+		uri = uri[7:]
 	return read_utf8_file(uri)
