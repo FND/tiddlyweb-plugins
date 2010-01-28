@@ -5,6 +5,7 @@ TiddlyWebWiki dev instantiation
 """
 
 import sys
+import os
 
 import tiddlywebplugins.devstore as devstore
 
@@ -15,21 +16,22 @@ from tiddlywebwiki.config import config as init_config
 
 
 def main(args):
-    args = [unicode(arg, 'UTF-8') for arg in args]
+    args = [unicode(arg, 'utf-8') for arg in args]
     instance_path = args[1]
 
     instance_tiddlers = init_config["instance_tiddlers"]
     for pair in args[2:]:
-        bag, uri = pair.split(':', 1)
+        bag, filepath = pair.split(':', 1)
+        filepath = os.path.abspath(uri)
 
         # XXX: _pretty_print doesn't handle Unicode strings properly
         bag = bag.encode('utf-8')
-        uri = uri.encode('utf-8')
+        filepath = filepath.encode('utf-8')
 
         try:
-            instance_tiddlers[bag].append(uri)
+            instance_tiddlers[bag].append(filepath)
         except KeyError:
-            instance_tiddlers[bag] = [uri]
+            instance_tiddlers[bag] = [filepath]
 
     server_store = ['tiddlywebplugins.devstore', { 'store_root': 'store' }]
     init_config['server_store'] = server_store
