@@ -38,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -80,7 +80,7 @@ class Store(StorageInterface):
 		logging.debug("get recipe %s" % recipe.name)
 		recipe_path = self._recipe_path(recipe)
 		try:
-			contents = read_utf8_file(recipe_path)
+			contents = _read_file(recipe_path)
 		except IOError, exc:
 			raise NoRecipeError(exc)
 		self.serializer.object = recipe
@@ -172,7 +172,7 @@ class Store(StorageInterface):
 		logging.debug("get user %s" % user)
 		user_path = self._user_path(user)
 		try:
-			user_info = read_utf8_file(user_path)
+			user_info = _read_file(user_path)
 			user_data = simplejson.loads(user_info)
 			for key, value in user_data.items():
 				if key == "roles":
@@ -241,7 +241,7 @@ class Store(StorageInterface):
 	def _read_description(self, base_path):
 		desc_path = self._description_path(base_path)
 		try:
-			return read_utf8_file(desc_path)
+			return _read_file(desc_path)
 		except IOError:
 			return ""
 
@@ -255,7 +255,7 @@ class Store(StorageInterface):
 
 	def _read_policy(self, base_path):
 		policy_path = self._policy_path(base_path)
-		json = read_utf8_file(policy_path)
+		json = _read_file(policy_path)
 		policy = Policy()
 		for key, value in simplejson.loads(json).items():
 			setattr(policy, key, value) # XXX: use setattr function instead of __setattr__ method?
@@ -263,7 +263,7 @@ class Store(StorageInterface):
 
 	def _get_local_tiddler(self, tiddler):
 		tiddler_path = self._tiddler_path(tiddler)
-		contents = read_utf8_file(tiddler_path)
+		contents = _read_file(tiddler_path)
 		self.serializer.object = tiddler
 		return self.serializer.from_string(contents)
 
@@ -281,7 +281,7 @@ class Store(StorageInterface):
 		elif uri.endswith(".js"):
 			tiddler.bag = tiddler.bag
 			tiddler.tags = ["systemConfig"]
-			tiddler.text = read_utf8_file(uri)
+			tiddler.text = _read_file(uri)
 		else:
 			raise ConfigurationError("could not parse URI: %s" % uri)
 
@@ -293,7 +293,7 @@ class Store(StorageInterface):
 
 		.tid format is TiddlyWeb text serialization
 		"""
-		contents = read_utf8_file(uri)
+		contents = _read_file(uri)
 		self.serializer.object = tiddler
 		self.serializer.from_string(contents)
 		return tiddler
@@ -340,7 +340,7 @@ def _expand_recipe(uri):
 	"""
 	base_dir = os.path.dirname(uri)
 
-	lines = read_utf8_file(uri).splitlines()
+	lines = _read_file(uri).splitlines()
 	rules = [line.rstrip() for line in lines if
 		line.startswith("tiddler:") or
 		line.startswith("plugin:") or
@@ -363,3 +363,9 @@ def _extract_title(uri):
 	determine title from file path
 	"""
 	return uri.split("/")[-1].rsplit(".", 1)[0]
+
+
+def _read_file(uri):
+	if uri.startswith("file:/"): # XXX: hack; use twimport's _get_url_handle!?
+		uri = uri[5:]
+	return read_utf8_file(uri)
