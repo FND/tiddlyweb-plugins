@@ -9,6 +9,7 @@ import os
 
 import tiddlywebplugins.devstore as devstore
 
+from tiddlyweb.util import std_error_message
 from tiddlywebplugins.instancer.util import spawn
 
 from tiddlywebwiki import instance as instance_module
@@ -17,9 +18,12 @@ from tiddlywebwiki.config import config as init_config
 
 def main(args):
     args = [unicode(arg, 'utf-8') for arg in args]
-    instance_path = args[1]
+    try:
+        instance_path = args[1]
+    except IndexError:
+        std_error_message('missing parameter: instance directory')
 
-    instance_tiddlers = init_config["instance_tiddlers"]
+    instance_tiddlers = init_config['instance_tiddlers']
     for pair in args[2:]:
         bag, filepath = pair.split(':', 1)
         filepath = os.path.abspath(filepath)
