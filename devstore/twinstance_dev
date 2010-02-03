@@ -21,7 +21,8 @@ def main(args):
     try:
         instance_path = args[1]
     except IndexError:
-        std_error_message('missing parameter: instance directory')
+        std_error_message('ERROR: missing instance directory parameter')
+        return False
 
     instance_tiddlers = init_config['instance_tiddlers']
     for pair in args[2:]:
