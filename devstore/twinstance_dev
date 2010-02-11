@@ -18,14 +18,24 @@ from tiddlywebwiki.config import config as init_config
 
 def main(args):
     args = [unicode(arg, 'utf-8') for arg in args]
+
     try:
-        instance_path = args[1]
+        package_name = args[1]
+        instance_module = __import__('%s.instance' % package_name, None, None,
+            [package_name])
+        init_config = __import__('%s.config' % package_name, None, None,
+            ['config']).config
+    except IndexError:
+        std_error_message('ERROR: missing package name parameter')
+        return False
+    try:
+        instance_path = args[2]
     except IndexError:
         std_error_message('ERROR: missing instance directory parameter')
         return False
 
     instance_tiddlers = init_config['instance_tiddlers']
-    for pair in args[2:]:
+    for pair in args[3:]:
         bag, filepath = pair.split(':', 1)
         filepath = os.path.abspath(filepath)
 
@@ -33,6 +43,7 @@ def main(args):
         bag = bag.encode('utf-8')
         filepath = filepath.encode('utf-8')
 
+        std_error_message('adding %s to %s' % (filepath, bag))
         try:
             instance_tiddlers[bag].append(filepath)
         except KeyError:
