@@ -13,6 +13,14 @@ from tiddlyweb.util import std_error_message
 from tiddlywebplugins.instancer.util import spawn
 
 
+INSTANCE_CONFIG_HEAD = """
+import sys
+sys.path.insert(0, '%s')
+import mangler
+import %s
+"""
+
+
 def main(args):
     args = [unicode(arg, 'utf-8') for arg in args]
 
@@ -21,10 +29,18 @@ def main(args):
     except IndexError:
         std_error_message('ERROR: missing package name parameter')
         return False
+    try:
+        import mangler
+        local_package = os.path.abspath('.')
+    except ImportError:
+        local_package = False
     instance_module = __import__('%s.instance' % package_name, None, None,
         [package_name])
     init_config = __import__('%s.config' % package_name, None, None,
         ['config']).config
+    if local_package:
+        init_config['instance_config_head'] = INSTANCE_CONFIG_HEAD % (
+            local_package, package_name)
 
     try:
         instance_path = args[2]
