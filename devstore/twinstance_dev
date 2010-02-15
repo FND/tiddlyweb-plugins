@@ -12,22 +12,20 @@ import tiddlywebplugins.devstore as devstore
 from tiddlyweb.util import std_error_message
 from tiddlywebplugins.instancer.util import spawn
 
-from tiddlywebwiki import instance as instance_module
-from tiddlywebwiki.config import config as init_config
-
 
 def main(args):
     args = [unicode(arg, 'utf-8') for arg in args]
 
     try:
         package_name = args[1]
-        instance_module = __import__('%s.instance' % package_name, None, None,
-            [package_name])
-        init_config = __import__('%s.config' % package_name, None, None,
-            ['config']).config
     except IndexError:
         std_error_message('ERROR: missing package name parameter')
         return False
+    instance_module = __import__('%s.instance' % package_name, None, None,
+        [package_name])
+    init_config = __import__('%s.config' % package_name, None, None,
+        ['config']).config
+
     try:
         instance_path = args[2]
     except IndexError:
