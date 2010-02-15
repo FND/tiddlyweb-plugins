@@ -38,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.4.4"
+__version__ = "0.5.0"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
