@@ -22,6 +22,9 @@ sys.modules['%s'].__dict__['__path__'].insert(0, '%s')
 """
 
 
+sys.path.insert(0, '.')
+
+
 def main(args):
     args = [unicode(arg, 'utf-8') for arg in args]
 
