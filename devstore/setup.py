@@ -8,7 +8,7 @@ except ImportError:
 from setuptools import setup, find_packages
 
 
-VERSION = "0.5.0" # N.B.: duplicate of tiddlywebplugins.devstore
+VERSION = "0.5.1" # N.B.: duplicate of tiddlywebplugins.devstore
 
 
 setup(
