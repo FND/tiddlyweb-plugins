@@ -31,14 +31,14 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 from tiddlyweb.model.policy import Policy
-from tiddlyweb.store import NoRecipeError, NoTiddlerError, NoUserError, \
-	StoreMethodNotImplemented
+from tiddlyweb.store import (NoRecipeError, NoBagError, NoTiddlerError,
+	NoUserError, StoreMethodNotImplemented)
 from tiddlyweb.stores import StorageInterface
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.5.2"
+__version__ = "0.5.3"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -104,6 +104,9 @@ class Store(StorageInterface):
 		logging.debug("get bag %s" % bag.name)
 
 		bag_path = self._bag_path(bag)
+
+		if not (self._index.get(bag.name, None) or os.path.isdir(bag_path)):
+			raise NoBagError
 
 		if not getattr(bag, "skinny", False):
 			locals = [filename[:-4] for filename in os.listdir(bag_path)
