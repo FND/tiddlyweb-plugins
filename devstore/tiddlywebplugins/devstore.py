@@ -38,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -147,7 +147,10 @@ class Store(StorageInterface):
 		try:
 			tiddler = self._get_local_tiddler(tiddler)
 		except IOError:
-			tiddler = self._get_remote_tiddler(tiddler)
+			try:
+				tiddler = self._get_remote_tiddler(tiddler)
+			except KeyError, exc:
+				raise NoTiddlerError(exc)
 		tiddler.revision = 1
 		return tiddler
 
