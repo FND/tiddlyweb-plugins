@@ -38,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.5.4"
+__version__ = "0.5.5"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -59,6 +59,9 @@ class Store(StorageInterface):
 		config = self.environ["tiddlyweb.config"]
 
 		self._root = store_config["store_root"]
+		if not os.path.isabs(self._root):
+			self._root = os.path.join(config["root_dir"], self._root)
+
 		try:
 			self._index = config["local_instance_tiddlers"]
 		except KeyError:
