@@ -17,7 +17,8 @@ def test_list_bags():
 		"instance_tiddlers": {
 			"alpha": ["%s/alpha/index.recipe" % REPO_DIR],
 			"bravo": ["%s/bravo/index.recipe" % REPO_DIR]
-		}
+		},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Storage(config["server_store"][1], env)
@@ -35,7 +36,8 @@ def test_list_bags_in_store():
 		"instance_tiddlers": {
 			"alpha": ["%s/alpha/index.recipe" % REPO_DIR],
 			"bravo": ["%s/bravo/index.recipe" % REPO_DIR]
-		}
+		},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], config["server_store"][1], env)

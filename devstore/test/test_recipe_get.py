@@ -18,7 +18,8 @@ def test_recipe_get_from_store():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": {}
+		"instance_tiddlers": {},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], config["server_store"][1], env)

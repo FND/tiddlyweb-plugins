@@ -23,7 +23,8 @@ def test_root_config():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", {}],
-		"instance_tiddlers": {}
+		"instance_tiddlers": {},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	raises(KeyError, 'Store(config["server_store"][0], config["server_store"][1], environ=env)')
@@ -34,7 +35,8 @@ def test_instance_tiddlers_config():
 	_cleanup()
 
 	config = {
-		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }]
+		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	raises(ConfigurationError, 'Storage(config["server_store"][1], environ=env)')
@@ -55,7 +57,8 @@ def test_instance_tiddlers_index():
 				"%s/bravo/index.recipe" % REPO_DIR,
 				"%s/bravo/title.tid" % REPO_DIR
 			]
-		}
+		},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Storage(config["server_store"][1], env)
@@ -82,7 +85,8 @@ def test_root_dir():
 		pass
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": {}
+		"instance_tiddlers": {},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], config["server_store"][1], environ=env)
@@ -98,7 +102,8 @@ def test_bag_dirs():
 		"instance_tiddlers": {
 			"foo": [],
 			"bar": []
-		}
+		},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], config["server_store"][1], environ=env)

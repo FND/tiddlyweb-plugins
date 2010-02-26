@@ -16,7 +16,8 @@ def test_list_recipes():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": {}
+		"instance_tiddlers": {},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Storage(config["server_store"][1], env)
@@ -35,7 +36,8 @@ def test_list_recipes_in_store():
 
 	config = {
 		"server_store": ["tiddlywebplugins.devstore", { "store_root": STORE_DIR }],
-		"instance_tiddlers": {}
+		"instance_tiddlers": {},
+		"root_dir": ""
 	}
 	env = { "tiddlyweb.config": config }
 	store = Store(config["server_store"][0], config["server_store"][1], env)
