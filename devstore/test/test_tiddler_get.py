@@ -39,6 +39,7 @@ def test_tiddler_get():
 
 	assert t.title == "foo"
 	assert t.bag == "myBag"
+	assert t.type == "text/javascript"
 	assert t.revision == 1
 	assert t.tags == ["systemConfig"]
 	assert t.modifier == None

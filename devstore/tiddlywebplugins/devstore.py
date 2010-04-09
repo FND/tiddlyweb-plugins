@@ -38,7 +38,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 
-__version__ = "0.5.5"
+__version__ = "0.5.6"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -288,7 +288,7 @@ class Store(StorageInterface):
 		if uri.endswith(TIDDLER_EXT):
 			tiddler = self._parse_tid(uri, tiddler)
 		elif uri.endswith(".js"):
-			tiddler.bag = tiddler.bag
+			tiddler.type = "text/javascript"
 			tiddler.tags = ["systemConfig"]
 			tiddler.text = _read_file(uri)
 		else:
