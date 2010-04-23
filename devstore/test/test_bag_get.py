@@ -53,4 +53,4 @@ def test_get_bag_from_store():
 
 	actual = [tiddler.title for tiddler in bag.list_tiddlers()]
 	expected = ["SiteTitle", "foo", "lorem"]
-	assert actual == expected
+	assert sorted(actual) == sorted(expected)

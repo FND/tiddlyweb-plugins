@@ -25,7 +25,7 @@ def test_list_bags():
 
 	actual = [bag.name for bag in store.list_bags()]
 	expected = ["bravo", "alpha"]
-	assert actual == expected
+	assert sorted(actual) == sorted(expected)
 
 
 def test_list_bags_in_store():
@@ -44,4 +44,4 @@ def test_list_bags_in_store():
 
 	actual = [bag.name for bag in store.list_bags()]
 	expected = ["bravo", "alpha"]
-	assert actual == expected
+	assert sorted(actual) == sorted(expected)

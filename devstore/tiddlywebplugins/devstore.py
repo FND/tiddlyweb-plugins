@@ -37,6 +37,8 @@ from tiddlyweb.stores import StorageInterface
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
+from tiddlyweb import __version__ as TIDDLYWEB_VERSION
+
 
 __version__ = "0.5.6"
 
@@ -111,19 +113,10 @@ class Store(StorageInterface):
 		if not (self._index.get(bag.name, None) or os.path.isdir(bag_path)):
 			raise NoBagError
 
-		if not getattr(bag, "skinny", False):
-			locals = [filename[:-4] for filename in os.listdir(bag_path)
-				if filename.endswith(TIDDLER_EXT)]
-			try:
-				uris = self._index[bag.name]
-				remotes = [_extract_title(uri) for uri in
-					_resolve_references(uris)]
-				titles = set(locals).union(remotes)
-			except KeyError: # non-remote bag
-				titles = locals
-			for title in titles: # TODO: ensure unique titles?
-				tiddler = Tiddler(title, bag.name)
-				bag.add_tiddler(tiddler)
+		if TIDDLYWEB_VERSION.startswith("1.0"):
+			if not (hasattr(bag, "skinny") and bag.skinny):
+				for tiddler in self.list_bag_tiddlers(bag):
+					bag.add_tiddler(tiddler)
 
 		bag.desc = self._read_description(bag_path)
 		bag.policy = self._read_policy(bag_path)
@@ -234,6 +227,23 @@ class Store(StorageInterface):
 		logging.debug("list users")
 		return (User(filename[:-5]) for filename in os.listdir(self._root)
 			if filename.endswith(USER_EXT))
+
+	def list_bag_tiddlers(self, bag):
+		bag_path = self._bag_path(bag)
+		locals = [filename[:-4] for filename in os.listdir(bag_path)
+			if filename.endswith(TIDDLER_EXT)]
+		store = self.environ.get("tiddlyweb.store", self)
+		try:
+			uris = self._index[bag.name]
+			remotes = [_extract_title(uri) for uri in
+					_resolve_references(uris)]
+			titles = set(locals).union(remotes)
+		except KeyError: # non-remote bag
+			titles = locals
+		for title in titles:
+			tiddler = self.tiddler_get(Tiddler(title, bag.name))
+			tiddler.store = store
+			yield tiddler
 
 	def list_tiddler_revisions(self, tiddler):
 		logging.debug("list revisions %s" % tiddler)
