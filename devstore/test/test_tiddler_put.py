@@ -52,3 +52,10 @@ def test_put_tiddler_to_store():
 
 	tiddler_path = os.path.join(STORE_DIR, tiddler.bag, "%s.tid" % tiddler.title)
 	assert os.path.exists(tiddler_path)
+
+	tiddler = Tiddler("foo/bar")
+	tiddler.bag = "myBag"
+	store.put(tiddler)
+
+	tiddler_path = os.path.join(STORE_DIR, "myBag", "foo%2Fbar.tid")
+	assert os.path.exists(tiddler_path)

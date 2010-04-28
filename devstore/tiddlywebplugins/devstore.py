@@ -34,13 +34,14 @@ from tiddlyweb.model.policy import Policy
 from tiddlyweb.store import (NoRecipeError, NoBagError, NoTiddlerError,
 	NoUserError, StoreMethodNotImplemented)
 from tiddlyweb.stores import StorageInterface
+from tiddlyweb.stores.text import _encode_filename as encode
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
 from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 
 
-__version__ = "0.5.7"
+__version__ = "0.5.8"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -318,16 +319,17 @@ class Store(StorageInterface):
 		return tiddler
 
 	def _recipe_path(self, recipe):
-		return "%s.recipe" % os.path.join(self._root, recipe.name)
+		return "%s.recipe" % os.path.join(self._root, encode(recipe.name))
 
 	def _bag_path(self, bag):
-		return os.path.join(self._root, bag.name)
+		return os.path.join(self._root, encode(bag.name))
 
 	def _tiddler_path(self, tiddler):
-		return "%s.tid" % os.path.join(self._root, tiddler.bag, tiddler.title)
+		return "%s.tid" % os.path.join(self._root, encode(tiddler.bag),
+			encode(tiddler.title))
 
 	def _user_path(self, user):
-		return "%s.user" % os.path.join(self._root, user.usersign)
+		return "%s.user" % os.path.join(self._root, encode(user.usersign))
 
 	def _policy_path(self, base_path):
 		return os.path.join(base_path, "policy")
