@@ -5,6 +5,7 @@ test module for retrieving TiddlerS
 import os
 
 from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
 from tiddlyweb.store import Store
 
 from tiddlywebplugins.devstore import Store as Storage
@@ -53,9 +54,25 @@ def test_put_tiddler_to_store():
 	tiddler_path = os.path.join(STORE_DIR, tiddler.bag, "%s.tid" % tiddler.title)
 	assert os.path.exists(tiddler_path)
 
+	tiddler = Tiddler("foo bar")
+	tiddler.bag = "myBag"
+	store.put(tiddler)
+
+	tiddler_path = os.path.join(STORE_DIR, "myBag", "foo%20bar.tid")
+	assert os.path.exists(tiddler_path)
+	assert store.get(tiddler).title == "foo bar"
+
+	# XXX: testing get operation here for convenience
+	bag = Bag("myBag")
+	try:
+		assert "foo bar" in [t.title for t in store.list_bag_tiddlers(bag)]
+	except AttributeError: # TiddlyWeb 1.0 has no list_bag_tiddlers method
+		pass
+
 	tiddler = Tiddler("foo/bar")
 	tiddler.bag = "myBag"
 	store.put(tiddler)
 
 	tiddler_path = os.path.join(STORE_DIR, "myBag", "foo%2Fbar.tid")
 	assert os.path.exists(tiddler_path)
+	assert store.get(tiddler).title == "foo/bar"

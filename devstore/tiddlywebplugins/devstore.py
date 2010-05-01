@@ -25,6 +25,7 @@ import logging
 import simplejson
 
 from shutil import rmtree
+from urllib import unquote as decode
 
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
@@ -41,7 +42,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 
 
-__version__ = "0.5.9"
+__version__ = "0.5.10"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -233,7 +234,7 @@ class Store(StorageInterface):
 
 	def list_bag_tiddlers(self, bag):
 		bag_path = self._bag_path(bag)
-		locals = [filename[:-4] for filename in os.listdir(bag_path)
+		locals = [decode(filename[:-4]) for filename in os.listdir(bag_path)
 			if filename.endswith(TIDDLER_EXT)]
 		store = self.environ.get("tiddlyweb.store", self)
 		try:
