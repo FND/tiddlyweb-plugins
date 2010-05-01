@@ -30,7 +30,11 @@ def test_tiddler_get():
 	assert t.title == "lorem"
 	assert t.bag == "myBag"
 	assert t.tags == []
+	assert t.creator == "FND"
 	assert t.modifier == "FND"
+	assert len(t.created) == 14
+	assert len(t.modified) == 14
+	assert t.created == t.modified
 	assert t.text == "lorem ipsum"
 
 	tiddler = Tiddler("foo")
@@ -42,7 +46,11 @@ def test_tiddler_get():
 	assert t.type == "text/javascript"
 	assert t.revision == 1
 	assert t.tags == ["systemConfig"]
+	assert t.creator == None
 	assert t.modifier == None
+	assert len(t.created) == 14
+	assert len(t.modified) == 14
+	assert t.created == t.modified
 	assert t.text == 'console.log("foo");\n'
 
 
@@ -67,7 +75,11 @@ def test_get_tiddler_from_store():
 	assert t.bag == "myBag"
 	assert t.revision == 1
 	assert t.tags == []
+	assert t.creator == "FND"
 	assert t.modifier == "FND"
+	assert len(t.created) == 14
+	assert len(t.modified) == 14
+	assert t.created == t.modified
 	assert t.text == "lorem ipsum"
 
 	tiddler = Tiddler("foo")
@@ -78,7 +90,11 @@ def test_get_tiddler_from_store():
 	assert t.bag == "myBag"
 	assert t.revision == 1
 	assert t.tags == ["systemConfig"]
+	assert t.creator == None
 	assert t.modifier == None
+	assert len(t.created) == 14
+	assert len(t.modified) == 14
+	assert t.created == t.modified
 	assert t.text == 'console.log("foo");\n'
 
 
@@ -102,7 +118,11 @@ def test_get_tiddler_revision():
 	assert t.bag == "myBag"
 	assert t.revision == 1
 	assert t.tags == []
+	assert t.creator == "FND"
 	assert t.modifier == "FND"
+	assert len(t.created) == 14
+	assert len(t.modified) == 14
+	assert t.created == t.modified
 	assert t.text == "lorem ipsum"
 
 	tiddler = Tiddler("hello world")
@@ -119,5 +139,9 @@ def test_get_tiddler_revision():
 	assert t.bag == "myBag"
 	assert t.revision == 1
 	assert t.tags == ["foo", "bar"]
+	assert t.creator == "FND"
 	assert t.modifier == "FND"
+	assert len(t.created) == 14
+	assert len(t.modified) == 14
+	assert t.created == t.modified
 	assert t.text == "lorem ipsum"

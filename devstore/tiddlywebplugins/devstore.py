@@ -41,7 +41,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 
 
-__version__ = "0.5.8"
+__version__ = "0.5.9"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -148,6 +148,8 @@ class Store(StorageInterface):
 				tiddler = self._get_remote_tiddler(tiddler)
 			except KeyError, exc:
 				raise NoTiddlerError(exc)
+		if not tiddler.created:
+			tiddler.created = tiddler.modified
 		tiddler.revision = 1
 		return tiddler
 
