@@ -42,7 +42,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 
 
-__version__ = "0.5.10"
+__version__ = "0.6.0"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -253,9 +253,19 @@ class Store(StorageInterface):
 		logging.debug("list revisions %s" % tiddler)
 		raise StoreMethodNotImplemented # store is revisionless
 
-	def search(self, search_query):
-		logging.debug("search %s" % search_query)
-		raise StoreMethodNotImplemented
+	def search(self, query):
+		bags = self.list_bags()
+		for bag in bags:
+			for tiddler in self.list_bag_tiddlers(bag):
+				if query in tiddler.bag:
+					yield tiddler
+				if query in tiddler.tags:
+					yield tiddler
+				for field in tiddler.fields:
+					if query in tiddler.fields[field]:
+						yield tiddler
+				if query in tiddler.text:
+					yield tiddler
 
 	def _write_description(self, desc, base_path):
 		desc_path = self._description_path(base_path)
