@@ -27,6 +27,7 @@ import simplejson
 from shutil import rmtree
 from urllib import unquote as decode
 
+from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
@@ -39,10 +40,10 @@ from tiddlyweb.stores.text import _encode_filename as encode
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import read_utf8_file, write_utf8_file
 
-from tiddlyweb import __version__ as TIDDLYWEB_VERSION
+from tiddlywebplugins.twimport import url_to_tiddler
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -309,26 +310,10 @@ class Store(StorageInterface):
 		except IndexError, exc:
 			raise NoTiddlerError(exc)
 
-		if uri.endswith(TIDDLER_EXT):
-			tiddler = self._parse_tid(uri, tiddler)
-		elif uri.endswith(".js"):
-			tiddler.type = "text/javascript"
-			tiddler.tags = ["systemConfig"]
-			tiddler.text = _read_file(uri)
-		else:
-			raise ConfigurationError("could not parse URI: %s" % uri)
+		bag = tiddler.bag # XXX: caching bag attribute hacky/insufficient?
+		tiddler = url_to_tiddler(uri)
+		tiddler.bag = bag
 
-		return tiddler
-
-	def _parse_tid(self, uri, tiddler):
-		"""
-		Populate Tiddler from .tid file
-
-		.tid format is TiddlyWeb text serialization
-		"""
-		contents = _read_file(uri)
-		self.serializer.object = tiddler
-		self.serializer.from_string(contents)
 		return tiddler
 
 	def _recipe_path(self, recipe):

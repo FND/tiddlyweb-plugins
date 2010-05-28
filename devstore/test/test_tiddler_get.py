@@ -51,7 +51,7 @@ def test_tiddler_get():
 	assert len(t.created) == 14
 	assert len(t.modified) == 14
 	assert t.created == t.modified
-	assert t.text == 'console.log("foo");\n'
+	assert t.text == 'console.log("foo");'
 
 
 def test_get_tiddler_from_store():
@@ -95,7 +95,7 @@ def test_get_tiddler_from_store():
 	assert len(t.created) == 14
 	assert len(t.modified) == 14
 	assert t.created == t.modified
-	assert t.text == 'console.log("foo");\n'
+	assert t.text == 'console.log("foo");'
 
 
 def test_get_tiddler_revision():

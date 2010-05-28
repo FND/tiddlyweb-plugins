@@ -8,7 +8,7 @@ except ImportError:
 from setuptools import setup, find_packages
 
 
-VERSION = "0.6.0" # N.B.: duplicate of tiddlywebplugins.devstore
+VERSION = "0.7.0" # N.B.: duplicate of tiddlywebplugins.devstore
 
 
 setup(
@@ -23,5 +23,9 @@ setup(
 	scripts = ['twinstance_dev'],
 	namespace_packages = ["tiddlywebplugins"],
 	packages = find_packages(exclude=["test"]),
-	install_requires = ["setuptools", "tiddlywebwiki"]
+	install_requires = [
+		"setuptools",
+		"tiddlywebwiki",
+		"tiddlywebplugins.twimport"
+	]
 )
