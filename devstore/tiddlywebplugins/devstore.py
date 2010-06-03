@@ -43,7 +43,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlywebplugins.twimport import url_to_tiddler
 
 
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -368,7 +368,8 @@ def _expand_recipe(uri):
 	uris = []
 	for rule in rules:
 		type, uri = rule.split(": ")
-		uri = os.path.join(base_dir, uri)
+		if not uri.startswith("http") and not uri.startswith("https"):
+			uri = os.path.join(base_dir, uri)
 		if type == "recipe":
 			uris = uris + _expand_recipe(uri)
 		else:
