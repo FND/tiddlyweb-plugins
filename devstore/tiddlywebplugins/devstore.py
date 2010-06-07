@@ -26,6 +26,7 @@ import simplejson
 
 from shutil import rmtree
 from urllib import unquote as decode
+from base64 import b64encode
 
 from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 from tiddlyweb.model.tiddler import Tiddler
@@ -43,7 +44,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlywebplugins.twimport import url_to_tiddler
 
 
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
