@@ -26,7 +26,6 @@ import simplejson
 
 from shutil import rmtree
 from urllib import unquote as decode
-from base64 import b64encode
 
 from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 from tiddlyweb.model.tiddler import Tiddler
@@ -44,7 +43,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlywebplugins.twimport import url_to_tiddler
 
 
-__version__ = "0.7.2"
+__version__ = "0.7.3"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -161,10 +160,6 @@ class Store(StorageInterface):
 
 		tiddler_path = self._tiddler_path(tiddler)
 		tiddler.revision = 1
-
-		if (tiddler.type and tiddler.type != "None" and
-			not tiddler.type.startswith("text/")):
-			tiddler.text = b64encode(tiddler.text)
 
 		self.serializer.object = tiddler
 		write_utf8_file(tiddler_path, self.serializer.to_string())
