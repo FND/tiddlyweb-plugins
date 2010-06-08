@@ -25,7 +25,7 @@ import logging
 import simplejson
 
 from shutil import rmtree
-from urllib import unquote as decode
+from urllib import unquote
 
 from tiddlyweb import __version__ as TIDDLYWEB_VERSION
 from tiddlyweb.model.tiddler import Tiddler
@@ -43,7 +43,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlywebplugins.twimport import url_to_tiddler
 
 
-__version__ = "0.7.3"
+__version__ = "0.7.4"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -213,12 +213,12 @@ class Store(StorageInterface):
 
 	def list_recipes(self):
 		logging.debug("list recipes")
-		return (Recipe(filename[:-7]) for filename in os.listdir(self._root)
-			if filename.endswith(RECIPE_EXT))
+		return (Recipe(decode(filename[:-7])) for filename in
+			os.listdir(self._root) if filename.endswith(RECIPE_EXT))
 
 	def list_bags(self):
 		logging.debug("list bags")
-		locals = [dirname for dirname in os.listdir(self._root)
+		locals = [decode(dirname) for dirname in os.listdir(self._root)
 			if os.path.isdir(os.path.join(self._root, dirname))]
 		remotes = [bag_name for bag_name in self._index]
 		names = set(locals).union(remotes)
@@ -226,8 +226,8 @@ class Store(StorageInterface):
 
 	def list_users(self):
 		logging.debug("list users")
-		return (User(filename[:-5]) for filename in os.listdir(self._root)
-			if filename.endswith(USER_EXT))
+		return (User(decode(filename[:-5])) for filename in
+			os.listdir(self._root) if filename.endswith(USER_EXT))
 
 	def list_bag_tiddlers(self, bag):
 		bag_path = self._bag_path(bag)
@@ -385,3 +385,7 @@ def _read_file(uri):
 	if uri.startswith("file://"): # XXX: hack; use twimport's _get_url_handle!?
 		uri = uri[7:]
 	return read_utf8_file(uri)
+
+
+def decode(name):
+	return unicode(unquote(name), "utf-8")
