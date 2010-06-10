@@ -43,11 +43,12 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlywebplugins.twimport import url_to_tiddler
 
 
-__version__ = "0.7.4"
+__version__ = "0.7.5"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
 TIDDLER_EXT = ".tid"
+PLUGIN_EXT = ".js"
 USER_EXT = ".user"
 
 
@@ -378,7 +379,12 @@ def _extract_title(uri):
 	"""
 	determine title from file path
 	"""
-	return uri.split("/")[-1].rsplit(".", 1)[0]
+	filename = uri.split("/")[-1]
+	name, ext = filename.rsplit(".", 1)
+	if ext in [TIDDLER_EXT, PLUGIN_EXT]:
+		return name
+	else:
+		return filename
 
 
 def _read_file(uri):
