@@ -43,7 +43,7 @@ from tiddlyweb.util import read_utf8_file, write_utf8_file
 from tiddlywebplugins.twimport import url_to_tiddler
 
 
-__version__ = "0.7.6"
+__version__ = "0.7.7"
 
 # XXX: should be class attributes?
 RECIPE_EXT = ".recipe"
@@ -262,7 +262,10 @@ class Store(StorageInterface):
 				for field in tiddler.fields:
 					if query in tiddler.fields[field]:
 						yield tiddler
-				if query in tiddler.text:
+				if ((tiddler.type == 'None'
+				    or tiddler.type == None
+				    or tiddler.type.startswith('text/'))
+				    and query in tiddler.text):
 					yield tiddler
 
 	def _write_description(self, desc, base_path):
