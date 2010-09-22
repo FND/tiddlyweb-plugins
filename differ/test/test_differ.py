@@ -17,7 +17,7 @@ def test_diff():
 	assert actual == expected
 
 	actual = diff(a, b, "horizontal")
-	expected = """<tr><td class="diff_next" id="difflib_chg_to0__0"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="from0_1">1</td><td nowrap="nowrap">lorem&nbsp;ipsum</td><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="to0_1">1</td><td nowrap="nowrap">lorem&nbsp;<span class="diff_add">foo&nbsp;</span>ipsum</td></tr>"""
+	expected = """<tr><td class="diff_next" id="difflib_chg_to0__0"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="from0_1">1</td><td>lorem ipsum</td><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="to0_1">1</td><td>lorem <span class="diff_add">foo </span>ipsum</td></tr>"""
 	assert expected in actual
 
 	actual = diff(a, b, "inline")

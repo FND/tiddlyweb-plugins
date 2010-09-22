@@ -262,10 +262,9 @@ class Store(StorageInterface):
 				for field in tiddler.fields:
 					if query in tiddler.fields[field]:
 						yield tiddler
-				if ((tiddler.type == 'None'
-				    or tiddler.type == None
-				    or tiddler.type.startswith('text/'))
-				    and query in tiddler.text):
+				if ((tiddler.type == 'None' or tiddler.type == None
+						or tiddler.type.startswith('text/'))
+						and query in tiddler.text):
 					yield tiddler
 
 	def _write_description(self, desc, base_path):

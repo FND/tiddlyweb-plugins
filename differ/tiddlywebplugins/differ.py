@@ -34,7 +34,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.4.1"
+__version__ = "0.6.0"
 
 
 def init(config):
@@ -116,7 +116,8 @@ def diff(a, b, format=None): # XXX: rename?
 		return "\n".join(difflib.unified_diff(a.splitlines(), b.splitlines()))
 	elif format == "horizontal": # XXX: rename
 		d = difflib.HtmlDiff()
-		return d.make_file(a.splitlines(), b.splitlines()) # XXX: use make_table?!
+		return (d.make_file(a.splitlines(), b.splitlines()). # XXX: use make_table?!
+			replace('<td nowrap="nowrap">', "<td>").replace("&nbsp;", " "))
 	elif format == "inline":
 		return generate_inline_diff(a, b)
 	else:
