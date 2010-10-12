@@ -29,12 +29,13 @@ import difflib
 
 from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.store import NoTiddlerError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400
 
 
-__version__ = "0.6.0"
+__version__ = "0.6.1"
 
 
 def init(config):
@@ -162,8 +163,10 @@ def _get_tiddler(id, store): # XXX: rename
 	else:
 		raise HTTP400("recipes not supported") # TODO?
 	tiddler.revision = rev
-	return store.get(tiddler)
-
+	try:
+		return store.get(tiddler)
+	except NoTiddlerError:
+		raise HTTP404("tiddler %s not found" % tiddler.title)
 
 def _resolve_identifier(id):
 	"""
