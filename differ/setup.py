@@ -2,7 +2,7 @@ AUTHOR = "FND"
 AUTHOR_EMAIL = "FNDo@gmx.net"
 NAME = "tiddlywebplugins.differ"
 DESCRIPTION = "TiddlyWeb plugin to compare tiddler revisions"
-VERSION = "0.6.1"
+VERSION = "0.6.2"
 
 
 import os

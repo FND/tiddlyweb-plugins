@@ -32,10 +32,10 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import NoTiddlerError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web import util as web
-from tiddlyweb.web.http import HTTP400
+from tiddlyweb.web.http import HTTP400, HTTP404
 
 
-__version__ = "0.6.1"
+__version__ = "0.6.2"
 
 
 def init(config):
