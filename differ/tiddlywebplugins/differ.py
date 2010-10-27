@@ -35,7 +35,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP400, HTTP404
 
 
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 
 
 def init(config):
@@ -168,6 +168,7 @@ def _get_tiddler(id, store): # XXX: rename
 	except NoTiddlerError:
 		raise HTTP404("tiddler %s not found" % tiddler.title)
 
+
 def _resolve_identifier(id):
 	"""
 	resolve tiddler identifier string
@@ -181,8 +182,11 @@ def _resolve_identifier(id):
 		type, name, title, rev = id.split("/")
 		rev = int(rev)
 	except ValueError: # revision implicit
-		type, name, title = id.split("/")
-		rev = 0 # HEAD
+		try:
+			type, name, title = id.split("/")
+			rev = 0 # HEAD
+		except ValueError:
+			raise HTTP400("invalid tiddler reference: %s" % id)
 	type = type[:-1] # strip plural
 	return type, name, title, rev
 
