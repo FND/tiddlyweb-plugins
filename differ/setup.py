@@ -2,7 +2,7 @@ AUTHOR = "FND"
 AUTHOR_EMAIL = "FNDo@gmx.net"
 NAME = "tiddlywebplugins.differ"
 DESCRIPTION = "TiddlyWeb plugin to compare tiddler revisions"
-VERSION = "0.6.3"
+VERSION = "0.6.4"
 
 
 import os
@@ -21,6 +21,6 @@ setup(
 	packages = find_packages(exclude="test"),
 	author_email = AUTHOR_EMAIL,
 	platforms = "Posix; MacOS X; Windows",
-	install_requires = ["setuptools", "tiddlyweb"],
+	install_requires = ["setuptools", "httpexceptor", "tiddlyweb>=1.3.0"],
 	zip_safe = False
 )

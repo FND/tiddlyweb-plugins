@@ -27,15 +27,16 @@ TODO:
 import cgi
 import difflib
 
+from httpexceptor import HTTP400, HTTP404
+
 from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import NoTiddlerError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web import util as web
-from tiddlyweb.web.http import HTTP400, HTTP404
 
 
-__version__ = "0.6.3"
+__version__ = "0.6.4"
 
 
 def init(config):
