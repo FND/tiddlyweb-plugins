@@ -13,7 +13,7 @@ def test_diff():
 	assert actual == expected
 
 	actual = diff(a, b, "unified")
-	expected = "---  \n\n+++  \n\n@@ -1,1 +1,1 @@\n\n-lorem ipsum\n+lorem foo ipsum"
+	expected = "--- \n\n+++ \n\n@@ -1 +1 @@\n\n-lorem ipsum\n+lorem foo ipsum"
 	assert actual == expected
 
 	actual = diff(a, b, "horizontal")
